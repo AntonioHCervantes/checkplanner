@@ -44,7 +44,9 @@ export default function TagFilter({
             >
               <span className="select-none">{tag.label}</span>
               {isActive ? (
-                <span className="sr-only">{t('tagFilter.activeIndicator')}</span>
+                <span className="sr-only">
+                  {t('tagFilter.activeIndicator')}
+                </span>
               ) : null}
             </button>
             <div className="pointer-events-none absolute inset-y-0 right-1 flex items-center gap-1">
