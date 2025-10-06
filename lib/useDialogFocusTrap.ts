@@ -30,31 +30,61 @@ export default function useDialogFocusTrap(
 ) {
   const previouslyFocusedElement = useRef<HTMLElement | null>(null);
   const { initialFocusRef } = options;
+  const focusAttemptFrame = useRef<number | null>(null);
+
+  const cancelFocusAttempt = useCallback(() => {
+    if (focusAttemptFrame.current !== null) {
+      window.cancelAnimationFrame(focusAttemptFrame.current);
+      focusAttemptFrame.current = null;
+    }
+  }, []);
 
   const focusFirstElement = useCallback(() => {
-    const dialog = dialogRef.current;
-    if (!dialog) {
-      return;
-    }
+    const attemptFocus = () => {
+      const dialog = dialogRef.current;
 
-    if (initialFocusRef?.current) {
-      initialFocusRef.current.focus();
-      return;
-    }
+      if (!dialog) {
+        focusAttemptFrame.current = window.requestAnimationFrame(attemptFocus);
+        return;
+      }
 
-    const focusable = getFocusableElements(dialog);
-    const first = focusable[0];
+      const preferredTarget = initialFocusRef?.current ?? null;
+      if (preferredTarget) {
+        preferredTarget.focus();
+        if (document.activeElement === preferredTarget) {
+          cancelFocusAttempt();
+          return;
+        }
+      }
 
-    if (first) {
-      first.focus();
-      return;
-    }
+      const focusable = getFocusableElements(dialog);
+      if (focusable.length > 0) {
+        const first = focusable[0];
+        first.focus();
+        if (
+          document.activeElement === first &&
+          (!initialFocusRef || initialFocusRef.current === first)
+        ) {
+          cancelFocusAttempt();
+          return;
+        }
+      } else {
+        if (!dialog.hasAttribute('tabindex')) {
+          dialog.setAttribute('tabindex', '-1');
+        }
+        dialog.focus();
+        if (!initialFocusRef || initialFocusRef.current === dialog) {
+          cancelFocusAttempt();
+          return;
+        }
+      }
 
-    if (!dialog.hasAttribute('tabindex')) {
-      dialog.setAttribute('tabindex', '-1');
-    }
-    dialog.focus();
-  }, [dialogRef, initialFocusRef]);
+      focusAttemptFrame.current = window.requestAnimationFrame(attemptFocus);
+    };
+
+    cancelFocusAttempt();
+    attemptFocus();
+  }, [cancelFocusAttempt, dialogRef, initialFocusRef]);
 
   const focusLastElement = useCallback(() => {
     const dialog = dialogRef.current;
@@ -83,9 +113,7 @@ export default function useDialogFocusTrap(
         ? document.activeElement
         : null;
 
-    const frame = window.requestAnimationFrame(() => {
-      focusFirstElement();
-    });
+    focusFirstElement();
 
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key !== 'Tab' || !dialogRef.current) {
@@ -118,13 +146,13 @@ export default function useDialogFocusTrap(
     document.addEventListener('keydown', handleKeyDown);
 
     return () => {
-      window.cancelAnimationFrame(frame);
+      cancelFocusAttempt();
       document.removeEventListener('keydown', handleKeyDown);
       if (previouslyFocusedElement.current) {
         previouslyFocusedElement.current.focus();
       }
     };
-  }, [dialogRef, focusFirstElement, isOpen]);
+  }, [cancelFocusAttempt, dialogRef, focusFirstElement, isOpen]);
 
   const handleFocusStart = useCallback(() => {
     focusLastElement();
