@@ -15,7 +15,6 @@ export default function FAQsPage() {
     { question: t('faqs.q6.question'), answer: t('faqs.q6.answer') },
     { question: t('faqs.q7.question'), answer: t('faqs.q7.answer') },
     { question: t('faqs.q8.question'), answer: t('faqs.q8.answer') },
-    { question: t('faqs.q9.question'), answer: t('faqs.q9.answer') },
   ];
 
   return (
@@ -26,9 +25,9 @@ export default function FAQsPage() {
           {t('faqs.intro')}
         </p>
       </header>
-      <section className="space-y-6">
+      <section className="space-y-12">
         <Accordion items={faqs} />
-        <div className="space-y-2 text-gray-700 dark:text-gray-200">
+        <div className="space-y-3 text-gray-700 dark:text-gray-200">
           <h2 className="text-xl font-semibold">{t('faqs.supportTitle')}</h2>
           <p>
             {t('faqs.support')}{' '}

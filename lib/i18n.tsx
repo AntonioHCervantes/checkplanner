@@ -292,47 +292,42 @@ const translations: Record<Language, any> = {
       q1: {
         question: 'What is CheckPlanner?',
         answer:
-          'CheckPlanner is a fast, free and open-source task manager that boosts your productivity by organizing tasks right in your browser.',
+          'CheckPlanner is a personal productivity app designed to keep your daily work organized entirely in your browser, combining simple planning boards with quick actions that help you stay focused.',
       },
       q2: {
-        question: 'How do I create a new task?',
+        question: 'How much does CheckPlanner cost?',
         answer:
-          'Use the input at the top, type your task and press Enter or click Add; you can also tag tasks to filter them by topic or project.',
+          'CheckPlanner is completely free to use, offers unlimited planning, and is published as open-source software so you can review or extend it whenever you want.',
       },
       q3: {
-        question: 'Can I export my tasks?',
+        question: 'Is there a user registration or sign-in?',
         answer:
-          'Yes, use the Export action in the header to download your data.',
+          'No account is required. CheckPlanner works privately on your device, loads instantly, and keeps everything fast and distraction-free without any sign-up flow.',
       },
       q4: {
-        question: 'What is the difference between My Day and My Tasks?',
-        answer:
-          'My Day lets you focus on tasks for today with the "To Do", "In Progress" and "Done" states. My Tasks is a place to collect and prioritize everything long term before moving tasks into My Day.',
-      },
-      q5: {
-        question: 'How do I move tasks between columns?',
-        answer:
-          'Drag tasks between columns or use the icons on each card to move them to the next column.',
-      },
-      q6: {
         question: 'Where is my data stored?',
         answer:
-          'All information is saved locally in your browser. Nothing is sent to any server.',
+          'Every task, board preference, and setting is stored locally in your browser. Nothing leaves your device, and you can export your workspace at any time to create backups.',
+      },
+      q5: {
+        question: 'Is my information shared with third parties?',
+        answer:
+          'No. CheckPlanner never sends analytics, telemetry, or task data to external services—everything remains local on your device.',
+      },
+      q6: {
+        question: 'Can I continue planning on another device?',
+        answer:
+          'Yes. Export your current plan to a JSON file and import it on another device to pick up exactly where you left off.',
       },
       q7: {
-        question: 'How do I import tasks from another device?',
+        question: 'Are there keyboard shortcuts to manage my tasks?',
         answer:
-          'Use the Import action in the header to load a previously exported JSON file.',
+          'Yes. While in My Day, press the spacebar to select a task and use the arrow keys to move it through the workflow instantly.',
       },
       q8: {
         question: 'Can I change the theme or language?',
         answer:
-          'Yes, use the header controls to toggle the theme and select your language.',
-      },
-      q9: {
-        question: 'How do I reset or clear all tasks?',
-        answer:
-          'Use the Clear all action in the header to remove every task; consider exporting first.',
+          'Yes. Use the header controls or open Settings to toggle between light and dark modes and choose the language you prefer.',
       },
       supportTitle: 'Support',
       support:
@@ -671,47 +666,43 @@ const translations: Record<Language, any> = {
       q1: {
         question: '¿Qué es CheckPlanner?',
         answer:
-          'CheckPlanner es un gestor de tareas rápido, gratuito y de código abierto que mejora tu productividad gracias a la organización de tus tareas en el navegador.',
+          'CheckPlanner es una aplicación de productividad personal pensada para organizar tu trabajo diario desde el navegador, combinando tableros sencillos con acciones rápidas que te ayudan a mantener el foco.',
       },
       q2: {
-        question: '¿Cómo creo una nueva tarea?',
+        question: '¿Qué precio tiene CheckPlanner?',
         answer:
-          'Usa la entrada en la parte superior, escribe tu tarea y pulsa Enter o el botón Añadir; además puedes etiquetar las tareas para filtrarlas fácilmente por temas o proyectos.',
+          'CheckPlanner es completamente gratuito, no tiene límites de uso y es open source, así que puedes revisar o ampliar el proyecto cuando quieras.',
       },
       q3: {
-        question: '¿Puedo exportar mis tareas?',
+        question: '¿No hay registro de usuario o inicio de sesión?',
         answer:
-          'Sí, utiliza la acción Exportar en la cabecera para descargar tus datos.',
+          'No necesitas crear cuentas. CheckPlanner funciona de forma privada en tu dispositivo, carga al instante y evita distracciones al no requerir ningún proceso de registro.',
       },
       q4: {
-        question: '¿Cuál es la diferencia entre Mi Día y Mis Tareas?',
-        answer:
-          'Mi Día te permite controlar las tareas que quieres hacer hoy con los estados "Por hacer", "En progreso" y "Hecho". En Mis Tareas puedes ir agregando todo lo que debas hacer, priorizarlo a largo plazo y moverlo luego a Mi Día.',
-      },
-      q5: {
-        question: '¿Cómo muevo tareas entre columnas?',
-        answer:
-          'Puedes arrastrar las tareas entre columnas o usar los iconos que aparecen en cada tarjeta para pasarlas a la siguiente columna.',
-      },
-      q6: {
         question: '¿Dónde se guardan mis datos?',
         answer:
-          'Toda la información se guarda localmente en tu navegador. Nada se envía a servidores.',
+          'Todas las tareas, preferencias y ajustes se almacenan localmente en tu navegador. Nada sale de tu dispositivo y puedes exportar tu espacio de trabajo en cualquier momento para crear copias de seguridad.',
+      },
+      q5: {
+        question: '¿Se comparte mi información con terceros?',
+        answer:
+          'No. CheckPlanner no envía analíticas, telemetría ni datos de tareas a servicios externos: todo permanece en local en tu dispositivo.',
+      },
+      q6: {
+        question: '¿Puedo continuar mi planificación en otro dispositivo?',
+        answer:
+          'Sí. Exporta tu planificación a un archivo JSON e impórtalo en otro dispositivo para continuar exactamente donde lo dejaste.',
       },
       q7: {
-        question: '¿Cómo importo tareas de otro dispositivo?',
+        question:
+          '¿Existen accesos rápidos desde teclado para manejar mis tareas?',
         answer:
-          'Usa la acción Importar en la cabecera para cargar un archivo JSON exportado previamente.',
+          'Sí. En Mi Día pulsa la barra espaciadora para seleccionar una tarea y usa las flechas del teclado para cambiar su estado al instante.',
       },
       q8: {
         question: '¿Puedo cambiar el tema o el idioma?',
         answer:
-          'Sí, utiliza los controles de la cabecera para alternar el tema y seleccionar tu idioma.',
-      },
-      q9: {
-        question: '¿Cómo puedo reiniciar o eliminar todas las tareas?',
-        answer:
-          'Usa la acción Eliminar todo en la cabecera para borrar todas las tareas; te recomendamos exportarlas antes.',
+          'Sí. Utiliza los controles de la cabecera o abre los ajustes para alternar el tema y elegir el idioma que prefieras.',
       },
       supportTitle: 'Soporte',
       support:
