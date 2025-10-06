@@ -1,11 +1,12 @@
 'use client';
-import { useEffect, useState } from 'react';
+import { useEffect, useId, useRef, useState } from 'react';
 import { Plus } from 'lucide-react';
 import AddTask from '../AddTask/AddTask';
 import TaskList from '../TaskList/TaskList';
 import TagFilter from '../TagFilter/TagFilter';
 import useTasksView from './useTasksView';
 import { useI18n } from '../../lib/i18n';
+import useDialogFocusTrap from '../../lib/useDialogFocusTrap';
 
 export default function TasksView() {
   const { state, actions } = useTasksView();
@@ -30,12 +31,40 @@ export default function TasksView() {
   } = actions;
   const { t } = useI18n();
   const [showMobileAddTask, setShowMobileAddTask] = useState(!hasTasks);
+  const confirmDialogRef = useRef<HTMLDivElement | null>(null);
+  const confirmCancelButtonRef = useRef<HTMLButtonElement | null>(null);
+  const confirmDeleteTitleId = useId();
+  const confirmDeleteDescriptionId = useId();
+  const { onFocusStartGuard, onFocusEndGuard } = useDialogFocusTrap(
+    Boolean(tagToRemove),
+    confirmDialogRef,
+    { initialFocusRef: confirmCancelButtonRef }
+  );
 
   useEffect(() => {
     if (!hasTasks) {
       setShowMobileAddTask(true);
     }
   }, [hasTasks]);
+
+  useEffect(() => {
+    if (!tagToRemove) {
+      return undefined;
+    }
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        event.preventDefault();
+        cancelRemoveTag();
+      }
+    };
+
+    document.addEventListener('keydown', handleKeyDown);
+
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [tagToRemove, cancelRemoveTag]);
 
   const showMobileForm = () => {
     setShowMobileAddTask(true);
@@ -85,10 +114,36 @@ export default function TasksView() {
       />
       {tagToRemove && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
-          <div className="w-full max-w-sm rounded bg-gray-900 p-6 text-center text-gray-100">
-            <p className="mb-4">{t('tagFilter.confirmDelete')}</p>
+          <div
+            ref={confirmDialogRef}
+            role="alertdialog"
+            aria-modal="true"
+            aria-labelledby={confirmDeleteTitleId}
+            aria-describedby={confirmDeleteDescriptionId}
+            className="w-full max-w-sm rounded bg-gray-900 p-6 text-center text-gray-100"
+          >
+            <span
+              tabIndex={0}
+              aria-hidden="true"
+              data-focus-guard
+              onFocus={onFocusStartGuard}
+              className="sr-only"
+            />
+            <h2
+              id={confirmDeleteTitleId}
+              className="mb-2 text-lg font-semibold"
+            >
+              {t('actions.removeTag')}
+            </h2>
+            <p
+              id={confirmDeleteDescriptionId}
+              className="mb-4"
+            >
+              {t('tagFilter.confirmDelete')}
+            </p>
             <div className="flex justify-center gap-2">
               <button
+                ref={confirmCancelButtonRef}
                 onClick={cancelRemoveTag}
                 className="rounded bg-gray-700 px-3 py-1 hover:bg-gray-600 focus:bg-gray-600"
               >
@@ -101,6 +156,13 @@ export default function TasksView() {
                 {t('confirmDelete.delete')}
               </button>
             </div>
+            <span
+              tabIndex={0}
+              aria-hidden="true"
+              data-focus-guard
+              onFocus={onFocusEndGuard}
+              className="sr-only"
+            />
           </div>
         </div>
       )}
