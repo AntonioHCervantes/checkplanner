@@ -8,7 +8,7 @@ import {
   HelpCircle,
   RotateCcw,
 } from 'lucide-react';
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Priority, Tag, Weekday, WEEKDAYS } from '../../lib/types';
 import { useI18n } from '../../lib/i18n';
 import { getDayStatusIcon } from '../../lib/dayStatus';
@@ -19,6 +19,7 @@ import LinkifiedText from '../LinkifiedText/LinkifiedText';
 import Link from '../Link/Link';
 import { useStore } from '../../lib/store';
 import useDialogFocusTrap from '../../lib/useDialogFocusTrap';
+import { flushSync } from 'react-dom';
 
 const BASE_TOOLTIP_OFFSET = -72;
 
@@ -58,6 +59,7 @@ export default function TaskItem({
   const [tooltipShift, setTooltipShift] = useState(0);
   const repeatDialogRef = useRef<HTMLDivElement | null>(null);
   const firstRepeatDayRef = useRef<HTMLInputElement | null>(null);
+  const repeatFocusRetryTimeoutRef = useRef<number | null>(null);
   const {
     onFocusStartGuard: onRepeatFocusStartGuard,
     onFocusEndGuard: onRepeatFocusEndGuard,
@@ -65,19 +67,60 @@ export default function TaskItem({
     initialFocusRef: firstRepeatDayRef,
   });
 
+  const focusFirstRepeatOption = useCallback(() => {
+    if (firstRepeatDayRef.current) {
+      firstRepeatDayRef.current.focus();
+      if (document.activeElement === firstRepeatDayRef.current) {
+        return true;
+      }
+    }
+
+    if (repeatDialogRef.current) {
+      repeatDialogRef.current.focus();
+      if (document.activeElement === repeatDialogRef.current) {
+        return true;
+      }
+    }
+
+    return false;
+  }, []);
+
+  const scheduleRepeatFocusRetry = useCallback(() => {
+    if (repeatFocusRetryTimeoutRef.current !== null) {
+      window.clearTimeout(repeatFocusRetryTimeoutRef.current);
+    }
+
+    repeatFocusRetryTimeoutRef.current = window.setTimeout(() => {
+      repeatFocusRetryTimeoutRef.current = null;
+      focusFirstRepeatOption();
+    }, 60);
+  }, [focusFirstRepeatOption]);
+
   useEffect(() => {
     if (!showRecurringOptions) {
-      return;
+      return () => {
+        if (repeatFocusRetryTimeoutRef.current !== null) {
+          window.clearTimeout(repeatFocusRetryTimeoutRef.current);
+          repeatFocusRetryTimeoutRef.current = null;
+        }
+      };
     }
 
     const frame = window.requestAnimationFrame(() => {
-      firstRepeatDayRef.current?.focus();
+      const focused = focusFirstRepeatOption();
+      if (!focused) {
+        scheduleRepeatFocusRetry();
+      }
     });
 
     return () => {
       window.cancelAnimationFrame(frame);
+      if (repeatFocusRetryTimeoutRef.current !== null) {
+        window.clearTimeout(repeatFocusRetryTimeoutRef.current);
+        repeatFocusRetryTimeoutRef.current = null;
+      }
     };
-  }, [showRecurringOptions]);
+  }, [focusFirstRepeatOption, scheduleRepeatFocusRetry, showRecurringOptions]);
 
   useEffect(() => {
     if (!showMyDayHelp) {
@@ -219,6 +262,22 @@ export default function TaskItem({
 
   const repeatStatusVisible = showRecurringOptions || selectedDays.length > 0;
 
+  const handleRepeatButtonClick = () => {
+    if (showRecurringOptions) {
+      setShowRecurringOptions(false);
+      return;
+    }
+
+    flushSync(() => {
+      setShowRecurringOptions(true);
+    });
+
+    const focused = focusFirstRepeatOption();
+    if (!focused) {
+      scheduleRepeatFocusRetry();
+    }
+  };
+
   const Actions = ({ showHelp }: { showHelp?: boolean }) => (
     <div
       className="relative flex w-full flex-col gap-2"
@@ -229,7 +288,7 @@ export default function TaskItem({
           <div className="relative">
             <button
               type="button"
-              onClick={() => setShowRecurringOptions(prev => !prev)}
+              onClick={handleRepeatButtonClick}
               aria-expanded={showRecurringOptions}
               aria-controls={repeatPanelId}
               aria-label={repeatButtonLabel}
@@ -316,6 +375,7 @@ export default function TaskItem({
           aria-modal="true"
           aria-labelledby={repeatDialogTitleId}
           aria-describedby={repeatDialogAriaDescribedBy}
+          tabIndex={-1}
           className="absolute right-0 top-full z-30 mt-2 w-64 space-y-3 rounded border border-gray-300 bg-white p-3 text-xs text-gray-700 shadow-lg focus:outline-none dark:border-gray-700 dark:bg-gray-900 dark:text-gray-200"
         >
           <span
