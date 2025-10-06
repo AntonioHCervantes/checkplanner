@@ -110,6 +110,7 @@ const translations: Record<Language, any> = {
     taskList: {
       noTasks: 'No tasks',
       noTasksIntro: 'Check your plan. Check your day.',
+      exploreDemoTemplates: 'Explore demo templates',
     },
     dnd: {
       keyboardInstructions:
@@ -482,6 +483,7 @@ const translations: Record<Language, any> = {
     taskList: {
       noTasks: 'No hay tareas',
       noTasksIntro: 'Check your plan. Check your day.',
+      exploreDemoTemplates: 'Explorar plantillas demo',
     },
     dnd: {
       keyboardInstructions:

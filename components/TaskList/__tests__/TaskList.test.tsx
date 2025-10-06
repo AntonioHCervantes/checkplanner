@@ -53,6 +53,9 @@ describe('TaskList', () => {
     expect(
       screen.getByText('Check your plan. Check your day.')
     ).toBeInTheDocument();
+    expect(
+      screen.getByRole('link', { name: 'Explore demo templates' })
+    ).toHaveAttribute('href', '/demo-templates');
   });
 
   it('shows default empty message while filtering', () => {
@@ -64,5 +67,8 @@ describe('TaskList', () => {
       />
     );
     expect(screen.getByText('No tasks')).toBeInTheDocument();
+    expect(
+      screen.queryByRole('link', { name: 'Explore demo templates' })
+    ).not.toBeInTheDocument();
   });
 });

@@ -1,4 +1,5 @@
 'use client';
+import Link from 'next/link';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { DndContext } from '@dnd-kit/core';
 import {
@@ -143,6 +144,14 @@ export default function TaskList({
                 {t(emptyMessageKey)}
               </p>
               <NoTasksIllustration className="mt-2 text-gray-400 dark:text-gray-500" />
+              {!hasTasks && !isFiltering && (
+                <Link
+                  href="/demo-templates"
+                  className="mt-4 inline-flex items-center rounded border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 transition hover:bg-gray-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-500 dark:border-gray-700 dark:text-gray-200 dark:hover:bg-gray-800"
+                >
+                  {t('taskList.exploreDemoTemplates')}
+                </Link>
+              )}
             </div>
           )}
         </div>
