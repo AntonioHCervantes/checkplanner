@@ -40,7 +40,7 @@ export default function TagFilter({
               type="button"
               onClick={() => toggleTag(tag.label)}
               aria-pressed={isActive}
-              className="flex items-center rounded-full bg-transparent px-2 py-1 text-current focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white/70"
+              className="flex items-center rounded-full bg-transparent py-1 pl-2 pr-1 text-current focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white/70"
             >
               <span className="mr-1 select-none">{tag.label}</span>
               {isActive ? (
