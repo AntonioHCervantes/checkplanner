@@ -66,6 +66,20 @@ export default function TaskItem({
   });
 
   useEffect(() => {
+    if (!showRecurringOptions) {
+      return;
+    }
+
+    const frame = window.requestAnimationFrame(() => {
+      firstRepeatDayRef.current?.focus();
+    });
+
+    return () => {
+      window.cancelAnimationFrame(frame);
+    };
+  }, [showRecurringOptions]);
+
+  useEffect(() => {
     if (!showMyDayHelp) {
       setTooltipShift(0);
       return;
