@@ -18,6 +18,7 @@ import { CSS } from '@dnd-kit/utilities';
 import LinkifiedText from '../LinkifiedText/LinkifiedText';
 import Link from '../Link/Link';
 import { useStore } from '../../lib/store';
+import useDialogFocusTrap from '../../lib/useDialogFocusTrap';
 
 const BASE_TOOLTIP_OFFSET = -72;
 
@@ -55,6 +56,14 @@ export default function TaskItem({
   const [showRecurringOptions, setShowRecurringOptions] = useState(false);
   const tooltipRef = useRef<HTMLDivElement | null>(null);
   const [tooltipShift, setTooltipShift] = useState(0);
+  const repeatDialogRef = useRef<HTMLDivElement | null>(null);
+  const firstRepeatDayRef = useRef<HTMLInputElement | null>(null);
+  const {
+    onFocusStartGuard: onRepeatFocusStartGuard,
+    onFocusEndGuard: onRepeatFocusEndGuard,
+  } = useDialogFocusTrap(showRecurringOptions, repeatDialogRef, {
+    initialFocusRef: firstRepeatDayRef,
+  });
 
   useEffect(() => {
     if (!showMyDayHelp) {
@@ -105,10 +114,18 @@ export default function TaskItem({
       setShowRecurringOptions(false);
     };
 
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        setShowRecurringOptions(false);
+      }
+    };
+
     document.addEventListener('mousedown', handleClickOutside);
+    document.addEventListener('keydown', handleKeyDown);
 
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener('keydown', handleKeyDown);
     };
   }, [showRecurringOptions]);
 
@@ -157,6 +174,17 @@ export default function TaskItem({
   const weeklyRepeat = task.repeat?.frequency === 'weekly' ? task.repeat : null;
   const selectedDays: Weekday[] = weeklyRepeat ? weeklyRepeat.days : [];
   const repeatPanelId = `task-repeat-${task.id}`;
+  const repeatDialogTitleId = `${repeatPanelId}-title`;
+  const repeatDialogLimitedHintId = `${repeatPanelId}-limited-hint`;
+  const repeatDialogAutoAddHintId = `${repeatPanelId}-auto-hint`;
+  const repeatDialogDescribedBy = [
+    showLimitedWeekdaysHint ? repeatDialogLimitedHintId : null,
+    repeatDialogAutoAddHintId,
+  ]
+    .filter(Boolean)
+    .join(' ');
+  const repeatDialogAriaDescribedBy =
+    repeatDialogDescribedBy.length > 0 ? repeatDialogDescribedBy : undefined;
   const repeatButtonLabel = selectedDays.length
     ? t('taskItem.recurring.buttonWithDays').replace(
         '{days}',
@@ -182,103 +210,133 @@ export default function TaskItem({
       className="relative flex w-full flex-col gap-2"
       data-repeat-actions="true"
     >
-      <div className="flex items-center justify-end gap-2">
-        <div className="relative">
-          <button
-            type="button"
-            onClick={() => setShowRecurringOptions(prev => !prev)}
-            aria-expanded={showRecurringOptions}
-            aria-controls={repeatPanelId}
-            aria-label={repeatButtonLabel}
-            title={repeatButtonLabel}
-            className={`flex items-center justify-center rounded bg-transparent p-1 text-black focus-visible:ring dark:text-white ${
-              showRecurringOptions || selectedDays.length > 0
-                ? 'text-[#57886C]'
-                : ''
-            }`}
-          >
-            <RotateCcw className="h-4 w-4" />
-          </button>
-        </div>
-        <div className="relative flex items-center">
-          <button
-            onClick={() => toggleMyDay(task.id)}
-            aria-label={
-              task.plannedFor
-                ? t('taskItem.removeMyDay')
-                : t('taskItem.addMyDay')
-            }
-            title={
-              task.plannedFor
-                ? t('taskItem.removeMyDay')
-                : t('taskItem.addMyDay')
-            }
-            className={`flex items-center justify-center rounded bg-transparent p-1 text-black focus:ring dark:text-white ${
-              showHelp
-                ? 'animate-pulse ring-2 ring-[#57886C] ring-offset-2 ring-offset-gray-100 dark:ring-offset-gray-900'
-                : ''
-            }`}
-          >
-            {task.plannedFor ? (
-              <CalendarX className="h-4 w-4" />
-            ) : (
-              <CalendarPlus className="h-4 w-4" />
-            )}
-          </button>
-          {showHelp && (
-            <div
-              ref={tooltipRef}
-              className="absolute left-1/2 top-full z-30 mt-4 w-72 max-w-xs rounded-3xl border border-slate-200/80 bg-white/95 px-5 py-4 text-[15px] text-slate-700 shadow-2xl backdrop-blur-sm dark:border-gray-700/70 dark:bg-gray-900/95 dark:text-gray-100"
-              style={{
-                transform: `translateX(calc(-50% + ${tooltipShift + BASE_TOOLTIP_OFFSET}px))`,
-              }}
+      <div aria-hidden={showRecurringOptions ? 'true' : undefined}>
+        <div className="flex items-center justify-end gap-2">
+          <div className="relative">
+            <button
+              type="button"
+              onClick={() => setShowRecurringOptions(prev => !prev)}
+              aria-expanded={showRecurringOptions}
+              aria-controls={repeatPanelId}
+              aria-label={repeatButtonLabel}
+              title={repeatButtonLabel}
+              className={`flex items-center justify-center rounded bg-transparent p-1 text-black focus-visible:ring dark:text-white ${
+                showRecurringOptions || selectedDays.length > 0
+                  ? 'text-[#57886C]'
+                  : ''
+              }`}
             >
-              <div className="flex items-start gap-3">
-                <HelpCircle className="mt-[2px] h-5 w-5 flex-shrink-0 text-[#57886C]" />
-                <span className="flex-1 leading-relaxed">
-                  {t('taskItem.myDayHelp')}
-                </span>
-                <button
-                  type="button"
-                  onClick={() => onCloseMyDayHelp?.()}
-                  aria-label={t('actions.close')}
-                  className="ml-2 rounded-full p-1 text-slate-400 transition hover:bg-slate-100 hover:text-slate-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#57886C] dark:text-gray-300 dark:hover:bg-gray-700/70 dark:hover:text-white"
-                >
-                  ×
-                </button>
+              <RotateCcw className="h-4 w-4" />
+            </button>
+          </div>
+          <div className="relative flex items-center">
+            <button
+              onClick={() => toggleMyDay(task.id)}
+              aria-label={
+                task.plannedFor
+                  ? t('taskItem.removeMyDay')
+                  : t('taskItem.addMyDay')
+              }
+              title={
+                task.plannedFor
+                  ? t('taskItem.removeMyDay')
+                  : t('taskItem.addMyDay')
+              }
+              className={`flex items-center justify-center rounded bg-transparent p-1 text-black focus:ring dark:text-white ${
+                showHelp
+                  ? 'animate-pulse ring-2 ring-[#57886C] ring-offset-2 ring-offset-gray-100 dark:ring-offset-gray-900'
+                  : ''
+              }`}
+            >
+              {task.plannedFor ? (
+                <CalendarX className="h-4 w-4" />
+              ) : (
+                <CalendarPlus className="h-4 w-4" />
+              )}
+            </button>
+            {showHelp && (
+              <div
+                ref={tooltipRef}
+                className="absolute left-1/2 top-full z-30 mt-4 w-72 max-w-xs rounded-3xl border border-slate-200/80 bg-white/95 px-5 py-4 text-[15px] text-slate-700 shadow-2xl backdrop-blur-sm dark:border-gray-700/70 dark:bg-gray-900/95 dark:text-gray-100"
+                style={{
+                  transform: `translateX(calc(-50% + ${tooltipShift + BASE_TOOLTIP_OFFSET}px))`,
+                }}
+              >
+                <div className="flex items-start gap-3">
+                  <HelpCircle className="mt-[2px] h-5 w-5 flex-shrink-0 text-[#57886C]" />
+                  <span className="flex-1 leading-relaxed">
+                    {t('taskItem.myDayHelp')}
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => onCloseMyDayHelp?.()}
+                    aria-label={t('actions.close')}
+                    className="ml-2 rounded-full p-1 text-slate-400 transition hover:bg-slate-100 hover:text-slate-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#57886C] dark:text-gray-300 dark:hover:bg-gray-700/70 dark:hover:text-white"
+                  >
+                    ×
+                  </button>
+                </div>
               </div>
-            </div>
-          )}
+            )}
+          </div>
+          <button
+            onClick={() => removeTask(task.id)}
+            aria-label={t('taskItem.deleteTask')}
+            title={t('taskItem.deleteTask')}
+            className="flex items-center justify-center rounded bg-transparent p-1 text-black focus:ring dark:text-white"
+          >
+            <Trash2 className="h-4 w-4" />
+          </button>
         </div>
-        <button
-          onClick={() => removeTask(task.id)}
-          aria-label={t('taskItem.deleteTask')}
-          title={t('taskItem.deleteTask')}
-          className="flex items-center justify-center rounded bg-transparent p-1 text-black focus:ring dark:text-white"
-        >
-          <Trash2 className="h-4 w-4" />
-        </button>
+        {repeatStatusVisible && (
+          <p className="text-right text-xs font-medium text-[#57886C]">
+            {repeatButtonLabel}
+          </p>
+        )}
       </div>
-      {repeatStatusVisible && (
-        <p className="text-right text-xs font-medium text-[#57886C]">
-          {repeatButtonLabel}
-        </p>
-      )}
       {showRecurringOptions && (
         <div
           id={repeatPanelId}
-          className="absolute right-0 top-full z-30 mt-2 w-64 space-y-3 rounded border border-gray-300 bg-white p-3 text-xs text-gray-700 shadow-lg dark:border-gray-700 dark:bg-gray-900 dark:text-gray-200"
+          ref={repeatDialogRef}
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby={repeatDialogTitleId}
+          aria-describedby={repeatDialogAriaDescribedBy}
+          className="absolute right-0 top-full z-30 mt-2 w-64 space-y-3 rounded border border-gray-300 bg-white p-3 text-xs text-gray-700 shadow-lg focus:outline-none dark:border-gray-700 dark:bg-gray-900 dark:text-gray-200"
         >
-          <div className="space-y-1">
-            <p>{t('taskItem.recurring.description')}</p>
-            {showLimitedWeekdaysHint && (
-              <p className="text-[11px] text-gray-500 dark:text-gray-400">
-                {t('taskItem.recurring.limitedBySchedule')}
-              </p>
-            )}
+          <span
+            tabIndex={0}
+            aria-hidden="true"
+            data-focus-guard
+            onFocus={onRepeatFocusStartGuard}
+            className="sr-only"
+          />
+          <div className="flex items-start justify-between gap-2">
+            <h2
+              id={repeatDialogTitleId}
+              className="text-xs font-semibold text-gray-900 dark:text-gray-100"
+            >
+              {t('taskItem.recurring.description')}
+            </h2>
+            <button
+              type="button"
+              onClick={() => setShowRecurringOptions(false)}
+              aria-label={t('actions.close')}
+              className="-mt-1 -mr-1 rounded p-1 text-gray-500 transition hover:bg-gray-100 hover:text-gray-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#57886C] dark:text-gray-300 dark:hover:bg-gray-800/80 dark:hover:text-white"
+            >
+              ×
+            </button>
           </div>
+          {showLimitedWeekdaysHint && (
+            <p
+              id={repeatDialogLimitedHintId}
+              className="text-[11px] text-gray-500 dark:text-gray-400"
+            >
+              {t('taskItem.recurring.limitedBySchedule')}
+            </p>
+          )}
           <div className="flex flex-wrap gap-2">
-            {availableWeekdays.map(day => {
+            {availableWeekdays.map((day, index) => {
               const checked = selectedDays.includes(day);
               return (
                 <label
@@ -291,6 +349,7 @@ export default function TaskItem({
                 >
                   <input
                     type="checkbox"
+                    ref={index === 0 ? firstRepeatDayRef : undefined}
                     checked={checked}
                     onChange={() => handleToggleRepeatDay(day)}
                     className="h-3.5 w-3.5"
@@ -300,7 +359,10 @@ export default function TaskItem({
               );
             })}
           </div>
-          <p className="text-[11px] text-gray-500 dark:text-gray-400">
+          <p
+            id={repeatDialogAutoAddHintId}
+            className="text-[11px] text-gray-500 dark:text-gray-400"
+          >
             {t('taskItem.recurring.autoAddHint')}
           </p>
           {selectedDays.length > 0 && (
@@ -312,6 +374,13 @@ export default function TaskItem({
               {t('taskItem.recurring.remove')}
             </button>
           )}
+          <span
+            tabIndex={0}
+            aria-hidden="true"
+            data-focus-guard
+            onFocus={onRepeatFocusEndGuard}
+            className="sr-only"
+          />
         </div>
       )}
     </div>
