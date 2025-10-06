@@ -15,7 +15,6 @@ export default function FAQsPage() {
     { question: t('faqs.q6.question'), answer: t('faqs.q6.answer') },
     { question: t('faqs.q7.question'), answer: t('faqs.q7.answer') },
     { question: t('faqs.q8.question'), answer: t('faqs.q8.answer') },
-    { question: t('faqs.q9.question'), answer: t('faqs.q9.answer') },
   ];
 
   return (

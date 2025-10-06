@@ -324,6 +324,11 @@ const translations: Record<Language, any> = {
         answer:
           'Yes. While in My Day, press the spacebar to select a task and use the arrow keys to move it through the workflow instantly.',
       },
+      q8: {
+        question: 'Can I change the theme or language?',
+        answer:
+          'Yes. Use the header controls or open Settings to toggle between light and dark modes and choose the language you prefer.',
+      },
       supportTitle: 'Support',
       support:
         'Need more help? Use our GitHub issues to report problems or suggestions.',
@@ -693,6 +698,11 @@ const translations: Record<Language, any> = {
           '¿Existen accesos rápidos desde teclado para manejar mis tareas?',
         answer:
           'Sí. En Mi Día pulsa la barra espaciadora para seleccionar una tarea y usa las flechas del teclado para cambiar su estado al instante.',
+      },
+      q8: {
+        question: '¿Puedo cambiar el tema o el idioma?',
+        answer:
+          'Sí. Utiliza los controles de la cabecera o abre los ajustes para alternar el tema y elegir el idioma que prefieras.',
       },
       supportTitle: 'Soporte',
       support:
