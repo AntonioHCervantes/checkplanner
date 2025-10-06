@@ -26,9 +26,9 @@ export default function FAQsPage() {
           {t('faqs.intro')}
         </p>
       </header>
-      <section className="space-y-6">
+      <section className="space-y-12">
         <Accordion items={faqs} />
-        <div className="space-y-2 text-gray-700 dark:text-gray-200">
+        <div className="space-y-3 text-gray-700 dark:text-gray-200">
           <h2 className="text-xl font-semibold">{t('faqs.supportTitle')}</h2>
           <p>
             {t('faqs.support')}{' '}

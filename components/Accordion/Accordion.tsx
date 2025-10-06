@@ -25,11 +25,13 @@ export default function Accordion({ items }: { items: AccordionItem[] }) {
             className="bg-white dark:bg-gray-900"
           >
             <button
-              className="flex w-full items-center justify-between p-4 text-left font-medium hover:bg-gray-50 focus-visible:bg-gray-50 focus:outline-none dark:hover:bg-gray-800 dark:focus-visible:bg-gray-800"
+              className="flex w-full items-center justify-between px-6 py-5 text-left font-medium hover:bg-gray-50 focus-visible:bg-gray-50 focus:outline-none dark:hover:bg-gray-800 dark:focus-visible:bg-gray-800"
               onClick={() => toggle(index)}
               aria-expanded={isOpen}
             >
-              <span>{item.question}</span>
+              <span className="text-lg font-semibold leading-snug">
+                {item.question}
+              </span>
               {isOpen ? (
                 <ChevronDown className="h-5 w-5" />
               ) : (
@@ -37,7 +39,7 @@ export default function Accordion({ items }: { items: AccordionItem[] }) {
               )}
             </button>
             {isOpen && (
-              <div className="p-4 pt-0 text-sm text-gray-700 dark:text-gray-300">
+              <div className="px-6 pb-6 pt-1 text-base leading-relaxed text-gray-700 dark:text-gray-300">
                 {item.answer}
               </div>
             )}
