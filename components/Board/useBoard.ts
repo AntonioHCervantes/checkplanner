@@ -1,8 +1,9 @@
 'use client';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import confetti from 'canvas-confetti';
 import {
   closestCorners,
+  KeyboardSensor,
   PointerSensor,
   useSensor,
   useSensors,
@@ -10,21 +11,28 @@ import {
   DragStartEvent,
   DragOverEvent,
 } from '@dnd-kit/core';
+import { sortableKeyboardCoordinates } from '@dnd-kit/sortable';
 import { Task } from '../../lib/types';
 import type { DayStatus } from '../../lib/dayStatus';
 import { useStore } from '../../lib/store';
 import { useI18n } from '../../lib/i18n';
+import { playApplause } from '../../lib/sounds';
 export interface UseBoardProps {
   mode: 'my-day' | 'kanban';
 }
 
 export default function useBoard({ mode }: UseBoardProps) {
   const sensors = useSensors(
-    useSensor(PointerSensor, { activationConstraint: { distance: 5 } })
+    useSensor(PointerSensor, { activationConstraint: { distance: 5 } }),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    })
   );
-  const { tasks, lists, order, moveTask, reorderTask } = useStore();
+  const { tasks, lists, order, moveTask, reorderTask, mainMyDayTaskId } =
+    useStore();
   const [activeTask, setActiveTask] = useState<Task | null>(null);
   const { t } = useI18n();
+  const dragOriginRef = useRef<{ dayStatus?: DayStatus } | null>(null);
 
   const columns: Array<{ id: string; title: string; status?: DayStatus }> =
     mode === 'my-day'
@@ -56,6 +64,12 @@ export default function useBoard({ mode }: UseBoardProps) {
     const id = event.active.id as string;
     const task = tasks.find(t => t.id === id) || null;
     setActiveTask(task);
+    dragOriginRef.current =
+      mode === 'my-day'
+        ? {
+            dayStatus: task?.dayStatus,
+          }
+        : null;
   };
 
   const handleDragOver = (event: DragOverEvent) => {
@@ -82,6 +96,8 @@ export default function useBoard({ mode }: UseBoardProps) {
   const handleDragEnd = (event: DragEndEvent) => {
     const { active, over } = event;
     setActiveTask(null);
+    const origin = dragOriginRef.current;
+    dragOriginRef.current = null;
     if (!over) return;
     const activeId = active.id as string;
     const activeContainer = active.data.current?.sortable.containerId as string;
@@ -90,9 +106,20 @@ export default function useBoard({ mode }: UseBoardProps) {
       (over.id as string);
     const overIndex =
       over.data.current?.sortable?.index ?? getTasks(overContainer).length;
+    const startedInDone =
+      mode === 'my-day'
+        ? origin?.dayStatus === 'done'
+        : activeContainer === 'done';
 
-    if (overContainer === 'done' && activeContainer === 'done') {
+    if (overContainer === 'done' && startedInDone) {
       confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
+    }
+
+    if (mode === 'my-day' && overContainer === 'done' && !startedInDone) {
+      confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
+      if (mainMyDayTaskId === activeId) {
+        playApplause();
+      }
     }
 
     reorderTask(activeId, overContainer, overIndex, mode);
