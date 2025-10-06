@@ -165,6 +165,27 @@ const DAY_FROM_INDEX: Record<number, Weekday> = {
   6: 'saturday',
 };
 
+const createWelcomeNotification = () => ({
+  id: 'welcome',
+  type: 'info' as const,
+  titleKey: 'notifications.welcome.title',
+  descriptionKey: 'notifications.welcome.description',
+  read: false,
+  createdAt: new Date().toISOString(),
+});
+
+const ensureWelcomeNotification = (
+  notifications: Notification[] | undefined
+): Notification[] => {
+  if (!notifications || notifications.length === 0) {
+    return [createWelcomeNotification()];
+  }
+
+  return notifications.some(notification => notification.id === 'welcome')
+    ? notifications
+    : [...notifications, createWelcomeNotification()];
+};
+
 const defaultState: PersistedState = {
   tasks: [],
   lists: defaultLists,
@@ -181,16 +202,7 @@ const defaultState: PersistedState = {
     'day-doing': [],
     'day-done': [],
   },
-  notifications: [
-    {
-      id: 'welcome',
-      type: 'info',
-      titleKey: 'notifications.welcome.title',
-      descriptionKey: 'notifications.welcome.description',
-      read: false,
-      createdAt: new Date().toISOString(),
-    },
-  ],
+  notifications: [createWelcomeNotification()],
   timers: {},
   mainMyDayTaskId: null,
   workSchedule: createEmptyWorkSchedule(),
@@ -849,6 +861,7 @@ export const useStore = create<Store>((set, get) => ({
     const sanitized: PersistedState = {
       ...defaultState,
       ...data,
+      notifications: ensureWelcomeNotification(data.notifications),
       timers: data.timers ?? {},
       mainMyDayTaskId: data.mainMyDayTaskId ?? null,
       workSchedule: sanitizeWorkSchedule(data.workSchedule),
