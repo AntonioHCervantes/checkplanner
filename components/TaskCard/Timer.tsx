@@ -1,5 +1,5 @@
 'use client';
-import type { ChangeEvent } from 'react';
+import type { ChangeEvent, KeyboardEvent } from 'react';
 import { Play, Pause } from 'lucide-react';
 import { useI18n } from '../../lib/i18n';
 import { useStore, DEFAULT_TIMER_DURATION } from '../../lib/store';
@@ -33,6 +33,14 @@ export default function Timer({ taskId }: TimerProps) {
     toggleTimer(taskId);
   };
 
+  const handleControlKeyDown = (
+    event: KeyboardEvent<HTMLSelectElement | HTMLButtonElement>
+  ) => {
+    if (event.key === ' ' || event.key === 'Enter') {
+      event.stopPropagation();
+    }
+  };
+
   const progress = Math.min(
     100,
     Math.max(0, duration > 0 ? ((duration - timeLeft) / duration) * 100 : 0)
@@ -43,6 +51,7 @@ export default function Timer({ taskId }: TimerProps) {
       <select
         value={duration}
         onChange={handleDurationChange}
+        onKeyDown={handleControlKeyDown}
         className="rounded bg-gray-200 p-1 text-sm dark:bg-gray-700"
       >
         {options.map(o => (
@@ -60,6 +69,7 @@ export default function Timer({ taskId }: TimerProps) {
           aria-label={running ? t('timer.pause') : t('timer.start')}
           title={running ? t('timer.pause') : t('timer.start')}
           className="rounded bg-blue-500 p-1 text-white hover:brightness-110 focus:ring"
+          onKeyDown={handleControlKeyDown}
         >
           {running ? (
             <Pause className="h-4 w-4" />

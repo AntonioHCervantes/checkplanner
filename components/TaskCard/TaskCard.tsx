@@ -214,6 +214,7 @@ export default function TaskCard(props: UseTaskCardProps) {
               icon={Clock}
               className="mt-4"
               aria-expanded={isTimerVisible}
+              onKeyDown={handleActionKeyDown}
             >
               {t('taskCard.showTimer')}
             </Link>
