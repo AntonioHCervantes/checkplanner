@@ -3,14 +3,14 @@
 ## Purpose of this document
 
 Use this handbook as the single source of truth when you collaborate with the
-CheckPlanner codebase. It summarizes the architecture, data flows,
-quality gates, and conventions that every agent must follow to keep the project
-healthy and scalable.
+CheckPlanner codebase. It summarizes the architecture, data flows, quality
+gates, and conventions that every agent must follow to keep the project healthy
+and scalable.
 
 ## How to use this guide
 
-1. Keep this guide in the `docs/` directory so every collaborator and
-   automation tool can locate it instantly.
+1. Keep this guide in the `docs/` directory so every collaborator and automation
+   tool can locate it instantly.
 2. Ensure the sections remain focused on the information agents need to work
    effectively—project overview, build and test commands, code style rules,
    testing guidance, security considerations, and any other context that aids
@@ -107,6 +107,14 @@ existing helpers so SSR remains safe.
 - When introducing new actions or notifications, surface them through the store
   so `TaskTimerManager`, `RecurringTaskManager`, and `WorkScheduleManager` can
   react appropriately.
+- Follow the component pattern that separates presentation and logic. Each
+  component exposes its UI while delegating state and behavior to a colocated
+  hook (for example `components/Foo/Foo.tsx` uses `useFoo.ts`). The hook returns
+  `{ state, actions }` (or similarly named objects) that the component consumes.
+  If the hook’s logic grows complex, extract helper functions to
+  `components/Foo/_helpers/*.ts` and add targeted tests either in
+  `components/Foo/__tests__` or `components/Foo/_helpers/__tests__` to keep the
+  codebase modular and well covered.
 
 ## Internationalization requirements
 
