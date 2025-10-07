@@ -35,14 +35,20 @@ repository—installable, offline-ready, and privacy-first.
 ## 🚀 Quick Start
 
 1. Clone the repository:
+
    ```bash
-   git clone https://github.com/your-username/checkplanner.git
+   git clone https://github.com/checkplanner/checkplanner.git
+   cd checkplanner
    ```
+
 2. Install dependencies:
+
    ```bash
    npm install
    ```
+
 3. Run the development server:
+
    ```bash
    npm run dev
    ```
