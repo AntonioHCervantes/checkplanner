@@ -1,10 +1,16 @@
 # CheckPlanner
 
-CheckPlanner is a simple, fast, and free tool to organize your tasks and
-boost your productivity.
+CheckPlanner is a simple, fast, and free tool to organize your tasks and boost
+your productivity.
 
 Your privacy is paramount: all data is stored locally in your browser's
 `localStorage`, ensuring your tasks stay on your machine.
+
+## 🌐 Live App
+
+Start planning right away at [checkplanner.com](https://www.checkplanner.com).
+The production site is the same PWA experience described in this
+repository—installable, offline-ready, and privacy-first.
 
 ## ✨ Features
 
@@ -29,19 +35,27 @@ Your privacy is paramount: all data is stored locally in your browser's
 ## 🚀 Quick Start
 
 1. Clone the repository:
+
    ```bash
-  git clone https://github.com/your-username/checkplanner.git
+   git clone https://github.com/checkplanner/checkplanner.git
+   cd checkplanner
    ```
+
 2. Install dependencies:
+
    ```bash
    npm install
    ```
+
 3. Run the development server:
+
    ```bash
    npm run dev
    ```
 
-Then open http://localhost:3000 in your browser.
+Then open http://localhost:3000 in your browser. Prefer the production build at
+[checkplanner.com](https://www.checkplanner.com) when you just want to use the
+planner without running it locally.
 
 ## 🤝 Contributing
 
