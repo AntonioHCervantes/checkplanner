@@ -111,6 +111,14 @@ existing helpers so SSR remains safe.
 - When introducing new actions or notifications, surface them through the store
   so `TaskTimerManager`, `RecurringTaskManager`, and `WorkScheduleManager` can
   react appropriately.
+- Follow the component pattern that separates presentation and logic. Each
+  component exposes its UI while delegating state and behavior to a colocated
+  hook (for example `components/Foo/Foo.tsx` uses `useFoo.ts`). The hook returns
+  `{ state, actions }` (or similarly named objects) that the component consumes.
+  If the hook’s logic grows complex, extract helper functions to
+  `components/Foo/_helpers/*.ts` and add targeted tests either in
+  `components/Foo/__tests__` or `components/Foo/_helpers/__tests__` to keep the
+  codebase modular and well covered.
 
 ## Internationalization requirements
 
