@@ -3,14 +3,14 @@
 ## Purpose of this document
 
 Use this handbook as the single source of truth when you collaborate with the
-CheckPlanner codebase. It summarizes the architecture, data flows,
-quality gates, and conventions that every agent must follow to keep the project
-healthy and scalable.
+CheckPlanner codebase. It summarizes the architecture, data flows, quality
+gates, and conventions that every agent must follow to keep the project healthy
+and scalable.
 
 ## How to use this guide
 
-1. Keep this guide in the `docs/` directory so every collaborator and
-   automation tool can locate it instantly.
+1. Keep this guide in the `docs/` directory so every collaborator and automation
+   tool can locate it instantly.
 2. Ensure the sections remain focused on the information agents need to work
    effectively—project overview, build and test commands, code style rules,
    testing guidance, security considerations, and any other context that aids
@@ -21,6 +21,10 @@ healthy and scalable.
    contributors join.
 
 ## Project at a glance
+
+- **Public domain:** [checkplanner.com](https://www.checkplanner.com) hosts the
+  live PWA experience. Treat it as the source of truth for user-facing copy and
+  behavior whenever you validate changes locally.
 
 - **Framework:** Next.js 14 (App Router) with React 18 and TypeScript in strict
   mode.
