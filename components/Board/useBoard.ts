@@ -126,8 +126,12 @@ export default function useBoard({ mode }: UseBoardProps) {
   };
 
   return {
-    state: { sensors, activeTask, columns },
+    state: {
+      sensors,
+      activeTask,
+      columns,
+      collisionDetection: closestCorners,
+    },
     actions: { getTasks, handleDragStart, handleDragOver, handleDragEnd },
-    helpers: { closestCorners },
   } as const;
 }

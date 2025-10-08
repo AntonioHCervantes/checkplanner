@@ -1,10 +1,10 @@
 'use client';
-import { useRef, useState, useEffect } from 'react';
+import { useRef } from 'react';
 import { Plus, Mic } from 'lucide-react';
 import { Priority } from '../../lib/types';
-import { useI18n, Language } from '../../lib/i18n';
+import { useI18n } from '../../lib/i18n';
 import useAddTask, { UseAddTaskProps } from './useAddTask';
-import useDialogFocusTrap from '../../lib/useDialogFocusTrap';
+import useAddTaskView from './useAddTaskView';
 
 export default function AddTask(props: UseAddTaskProps) {
   const { state, actions } = useAddTask(props);
@@ -19,65 +19,27 @@ export default function AddTask(props: UseAddTaskProps) {
     removeTag,
   } = actions;
   const { t, language } = useI18n();
-  const recognitionRef = useRef<any>(null);
-  const [isListening, setIsListening] = useState(false);
-  const [showVoiceWarning, setShowVoiceWarning] = useState(false);
-  const speechLangMap: Record<Language, string> = { en: 'en-US', es: 'es-ES' };
-  const titleRef = useRef(title);
-  const initialTitleRef = useRef('');
   const tagInputRef = useRef<HTMLInputElement>(null);
-  const voiceWarningRef = useRef<HTMLDivElement | null>(null);
-  const voiceWarningCloseButtonRef = useRef<HTMLButtonElement | null>(null);
   const {
-    onFocusStartGuard: onVoiceWarningFocusStartGuard,
-    onFocusEndGuard: onVoiceWarningFocusEndGuard,
-  } = useDialogFocusTrap(showVoiceWarning, voiceWarningRef, {
-    initialFocusRef: voiceWarningCloseButtonRef,
+    state: {
+      isListening,
+      showVoiceWarning,
+      voiceWarningRef,
+      voiceWarningCloseButtonRef,
+    },
+    actions: {
+      handleVoiceInput,
+      closeVoiceWarning,
+      getTagColor,
+      onVoiceWarningFocusStartGuard,
+      onVoiceWarningFocusEndGuard,
+    },
+  } = useAddTaskView({
+    title,
+    setTitle,
+    existingTags,
+    language,
   });
-
-  const getTagColor = (tagLabel: string) => {
-    const tag = existingTags.find(t => t.label === tagLabel);
-    return tag ? tag.color : '#ccc';
-  };
-
-  useEffect(() => {
-    titleRef.current = title;
-  }, [title]);
-
-  const handleVoiceInput = () => {
-    const SpeechRecognition =
-      (window as any).SpeechRecognition ||
-      (window as any).webkitSpeechRecognition;
-    if (!SpeechRecognition) return;
-
-    if (!recognitionRef.current) {
-      const recognition = new SpeechRecognition();
-      recognition.interimResults = false;
-      recognition.onresult = (e: any) => {
-        const transcript = e.results[0][0].transcript;
-        setTitle(prev => (prev ? `${prev} ${transcript}` : transcript));
-        recognition.stop();
-      };
-      recognition.onspeechend = () => recognition.stop();
-      recognition.onend = () => {
-        setIsListening(false);
-        if (initialTitleRef.current === titleRef.current) {
-          setShowVoiceWarning(true);
-        }
-      };
-      recognitionRef.current = recognition;
-    }
-
-    recognitionRef.current.lang = speechLangMap[language] || language;
-
-    if (isListening) {
-      recognitionRef.current.stop();
-    } else {
-      initialTitleRef.current = titleRef.current;
-      recognitionRef.current.start();
-    }
-    setIsListening(prev => !prev);
-  };
 
   return (
     <>
@@ -218,7 +180,7 @@ export default function AddTask(props: UseAddTaskProps) {
             </h2>
             <button
               ref={voiceWarningCloseButtonRef}
-              onClick={() => setShowVoiceWarning(false)}
+              onClick={closeVoiceWarning}
               className="rounded bg-gray-700 px-3 py-1 hover:bg-gray-600 focus:bg-gray-600"
             >
               {t('actions.close')}

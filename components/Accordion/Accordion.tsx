@@ -1,7 +1,7 @@
 'use client';
 
-import { useState } from 'react';
 import { ChevronDown, ChevronRight } from 'lucide-react';
+import useAccordion from './useAccordion';
 
 export interface AccordionItem {
   question: string;
@@ -9,11 +9,10 @@ export interface AccordionItem {
 }
 
 export default function Accordion({ items }: { items: AccordionItem[] }) {
-  const [openIndex, setOpenIndex] = useState<number | null>(null);
-
-  const toggle = (index: number) => {
-    setOpenIndex(prev => (prev === index ? null : index));
-  };
+  const {
+    state: { openIndex },
+    actions: { toggle },
+  } = useAccordion();
 
   return (
     <div className="divide-y overflow-hidden rounded border shadow-sm">

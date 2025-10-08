@@ -5,10 +5,9 @@ import TaskCard from '../TaskCard/TaskCard';
 import useBoard, { UseBoardProps } from './useBoard';
 
 export default function Board(props: UseBoardProps) {
-  const { state, actions, helpers } = useBoard(props);
-  const { sensors, activeTask, columns } = state;
+  const { state, actions } = useBoard(props);
+  const { sensors, activeTask, columns, collisionDetection } = state;
   const { getTasks, handleDragStart, handleDragOver, handleDragEnd } = actions;
-  const { closestCorners } = helpers;
 
   const scrollContainerClasses =
     props.mode === 'my-day'
@@ -18,7 +17,7 @@ export default function Board(props: UseBoardProps) {
   return (
     <DndContext
       sensors={sensors}
-      collisionDetection={closestCorners}
+      collisionDetection={collisionDetection}
       onDragStart={handleDragStart}
       onDragOver={handleDragOver}
       onDragEnd={handleDragEnd}

@@ -1,12 +1,11 @@
 'use client';
-import { useEffect, useId, useRef, useState } from 'react';
 import { Plus } from 'lucide-react';
 import AddTask from '../AddTask/AddTask';
 import TaskList from '../TaskList/TaskList';
 import TagFilter from '../TagFilter/TagFilter';
 import useTasksView from './useTasksView';
 import { useI18n } from '../../lib/i18n';
-import useDialogFocusTrap from '../../lib/useDialogFocusTrap';
+import useTasksViewLayout from './useTasksViewLayout';
 
 export default function TasksView() {
   const { state, actions } = useTasksView();
@@ -30,45 +29,20 @@ export default function TasksView() {
     cancelRemoveTag,
   } = actions;
   const { t } = useI18n();
-  const [showMobileAddTask, setShowMobileAddTask] = useState(!hasTasks);
-  const confirmDialogRef = useRef<HTMLDivElement | null>(null);
-  const confirmCancelButtonRef = useRef<HTMLButtonElement | null>(null);
-  const confirmDeleteTitleId = useId();
-  const confirmDeleteDescriptionId = useId();
-  const { onFocusStartGuard, onFocusEndGuard } = useDialogFocusTrap(
-    Boolean(tagToRemove),
-    confirmDialogRef,
-    { initialFocusRef: confirmCancelButtonRef }
-  );
-
-  useEffect(() => {
-    if (!hasTasks) {
-      setShowMobileAddTask(true);
-    }
-  }, [hasTasks]);
-
-  useEffect(() => {
-    if (!tagToRemove) {
-      return undefined;
-    }
-
-    const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') {
-        event.preventDefault();
-        cancelRemoveTag();
-      }
-    };
-
-    document.addEventListener('keydown', handleKeyDown);
-
-    return () => {
-      document.removeEventListener('keydown', handleKeyDown);
-    };
-  }, [tagToRemove, cancelRemoveTag]);
-
-  const showMobileForm = () => {
-    setShowMobileAddTask(true);
-  };
+  const {
+    state: {
+      showMobileAddTask,
+      confirmDialogRef,
+      confirmCancelButtonRef,
+      confirmDeleteTitleId,
+      confirmDeleteDescriptionId,
+    },
+    actions: { showMobileForm, onFocusStartGuard, onFocusEndGuard },
+  } = useTasksViewLayout({
+    hasTasks,
+    tagToRemove,
+    cancelRemoveTag,
+  });
   return (
     <main>
       {hasTasks && !showMobileAddTask && (
