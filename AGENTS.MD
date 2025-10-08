@@ -26,8 +26,9 @@ If any of these fail, do not open or update a PR. Fix first.
   formatting clean and adhere to Conventional Commits.
 - Structure components using the presentational + hook pattern. Keep the UI file
   focused on markup and styling, move state/actions into a colocated hook that
-  returns the data needed by the component, and extract heavy logic into
-  `_helpers/` with dedicated tests when it becomes complex. Place component and
+  returns only two top-level keys—`state` for data (including refs, ids, and
+  derived values) and `actions` for callable handlers—and extract heavy logic
+  into `_helpers/` with dedicated tests when it becomes complex. Place component and
   helper tests under their respective `__tests__/` directories.
 
 ## Testing instructions

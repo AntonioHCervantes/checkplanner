@@ -1,39 +1,15 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
 import { Check } from 'lucide-react';
-import { useRouter } from 'next/navigation';
-import { useStore } from '../../lib/store';
 import { useI18n } from '../../lib/i18n';
-import useDialogFocusTrap from '../../lib/useDialogFocusTrap';
+import useWelcomeModal from './useWelcomeModal';
 
 export default function WelcomeModal() {
-  const [open, setOpen] = useState(false);
-  const tasks = useStore(state => state.tasks);
-  const router = useRouter();
+  const {
+    state: { open, checklistItems, dialogRef, primaryButtonRef },
+    actions: { handleClose, onFocusStartGuard, onFocusEndGuard },
+  } = useWelcomeModal();
   const { t } = useI18n();
-  const dialogRef = useRef<HTMLDivElement | null>(null);
-  const primaryButtonRef = useRef<HTMLButtonElement | null>(null);
-  const { onFocusStartGuard, onFocusEndGuard } = useDialogFocusTrap(
-    open,
-    dialogRef,
-    {
-      initialFocusRef: primaryButtonRef,
-    }
-  );
-
-  useEffect(() => {
-    const seen = localStorage.getItem('welcomeSeen');
-    if (!seen && tasks.length === 0) {
-      setOpen(true);
-    }
-  }, [tasks]);
-
-  const handleClose = () => {
-    localStorage.setItem('welcomeSeen', '1');
-    setOpen(false);
-    router.push('/my-tasks');
-  };
 
   if (!open) return null;
 
@@ -60,7 +36,7 @@ export default function WelcomeModal() {
           {t('welcomeModal.title')}
         </h2>
         <ul className="mb-6 space-y-2">
-          {[1, 2, 3, 4, 5].map(n => (
+          {checklistItems.map(n => (
             <li
               key={n}
               className="flex items-start gap-2"

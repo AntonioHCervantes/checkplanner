@@ -1,10 +1,15 @@
 import { render, screen, fireEvent } from '../../../test/test-utils';
 import AddTask from '../AddTask';
 import useAddTask from '../useAddTask';
+import useAddTaskView from '../useAddTaskView';
 
 jest.mock('../useAddTask');
+jest.mock('../useAddTaskView');
 
 const mockUseAddTask = useAddTask as jest.MockedFunction<typeof useAddTask>;
+const mockUseAddTaskView = useAddTaskView as jest.MockedFunction<
+  typeof useAddTaskView
+>;
 
 describe('AddTask', () => {
   beforeEach(() => {
@@ -25,6 +30,21 @@ describe('AddTask', () => {
         removeTag: jest.fn(),
       },
     });
+    mockUseAddTaskView.mockReturnValue({
+      state: {
+        isListening: false,
+        showVoiceWarning: false,
+        voiceWarningRef: { current: null },
+        voiceWarningCloseButtonRef: { current: null },
+      },
+      actions: {
+        handleVoiceInput: jest.fn(),
+        closeVoiceWarning: jest.fn(),
+        getTagColor: jest.fn(),
+        onVoiceWarningFocusStartGuard: jest.fn(),
+        onVoiceWarningFocusEndGuard: jest.fn(),
+      },
+    } as any);
   });
 
   it('calls handleAdd on submit', () => {

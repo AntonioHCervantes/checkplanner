@@ -18,6 +18,7 @@ describe('Board', () => {
           { id: 'c1', title: 'Col1' },
           { id: 'c2', title: 'Col2' },
         ],
+        collisionDetection: jest.fn(),
       },
       actions: {
         getTasks: () => [],
@@ -25,7 +26,6 @@ describe('Board', () => {
         handleDragOver: jest.fn(),
         handleDragEnd: jest.fn(),
       },
-      helpers: { closestCorners: jest.fn() },
     });
 
     render(<Board mode="my-day" />);
