@@ -27,6 +27,9 @@ type SpeechRecognitionInstance = {
 const SPEECH_LANGUAGE_MAP: Record<Language, string> = {
   en: 'en-US',
   es: 'es-ES',
+  fr: 'fr-FR',
+  it: 'it-IT',
+  de: 'de-DE',
 };
 
 export default function useAddTaskView({
