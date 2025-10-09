@@ -230,7 +230,7 @@ export default function Header() {
                 {language.toUpperCase()}
               </button>
               {showLang && (
-                <div className="absolute right-0 mt-2 w-48 rounded bg-gray-100 shadow dark:bg-gray-800">
+                <div className="absolute right-0 mt-2 w-48 rounded bg-gray-100 shadow dark:bg-gray-800 z-50">
                   {LANGUAGES.map(code => (
                     <button
                       key={code}
