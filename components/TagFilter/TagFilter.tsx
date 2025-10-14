@@ -11,6 +11,7 @@ interface TagFilterProps {
   showAll: () => void;
   removeTag: (label: string) => void;
   toggleFavorite: (label: string) => void;
+  'data-testid'?: string;
 }
 
 export default function TagFilter({
@@ -20,11 +21,15 @@ export default function TagFilter({
   showAll,
   removeTag,
   toggleFavorite,
+  'data-testid': testId,
 }: TagFilterProps) {
   const { t } = useI18n();
   if (tags.length === 0) return null;
   return (
-    <div className="mt-4 flex flex-wrap items-center gap-2 px-4 pb-2">
+    <div
+      className="mt-4 flex flex-wrap items-center gap-2 px-4 pb-2"
+      data-testid={testId ?? 'tag-filter'}
+    >
       {tags.map(tag => {
         const isActive = activeTags.includes(tag.label);
         return (
@@ -41,6 +46,8 @@ export default function TagFilter({
               onClick={() => toggleTag(tag.label)}
               aria-pressed={isActive}
               className="flex items-center rounded-full bg-transparent py-1 pl-2 pr-1 text-current focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white/70"
+              data-testid="tag-filter-toggle"
+              data-tag={tag.label}
             >
               <span className="mr-1 select-none">{tag.label}</span>
               {isActive ? (
@@ -68,6 +75,8 @@ export default function TagFilter({
                     : t('actions.favoriteTag')
                 }
                 className="ml-1 flex h-4 w-4 items-center justify-center rounded-full text-white hover:bg-black/20 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white/70"
+                data-testid="tag-filter-favorite"
+                data-tag={tag.label}
               >
                 <Star
                   className="h-3 w-3"
@@ -83,6 +92,8 @@ export default function TagFilter({
                 aria-label={t('actions.removeTag')}
                 title={t('actions.removeTag')}
                 className="ml-1 flex h-4 w-4 items-center justify-center rounded-full text-white hover:bg-black/20 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white/70"
+                data-testid="tag-filter-remove"
+                data-tag={tag.label}
               >
                 ×
               </button>
@@ -93,6 +104,7 @@ export default function TagFilter({
       <Link
         onClick={showAll}
         className="text-xs"
+        data-testid="tag-filter-show-all"
       >
         {t('tagFilter.showAll')}
       </Link>

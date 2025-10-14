@@ -26,6 +26,7 @@ interface TaskItemProps extends UseTaskItemProps {
   highlighted?: boolean;
   showMyDayHelp?: boolean;
   onCloseMyDayHelp?: () => void;
+  'data-testid'?: string;
 }
 
 export default function TaskItem({
@@ -33,6 +34,7 @@ export default function TaskItem({
   highlighted,
   showMyDayHelp = false,
   onCloseMyDayHelp,
+  'data-testid': testId,
 }: TaskItemProps) {
   const { state, actions } = useTaskItem({ taskId });
   const { task, isEditing, title, allTags, showTagInput } = state as any;
@@ -209,6 +211,7 @@ export default function TaskItem({
     <div
       className="relative flex w-full flex-col gap-2"
       data-repeat-actions="true"
+      data-testid="task-item-actions"
     >
       <div aria-hidden={showRecurringOptions ? 'true' : undefined}>
         <div className="flex items-center justify-end gap-2">
@@ -225,8 +228,12 @@ export default function TaskItem({
                   ? 'text-[#57886C]'
                   : ''
               }`}
+              data-testid="task-item-toggle-recurring"
             >
-              <RotateCcw className="h-4 w-4" />
+              <RotateCcw
+                className="h-4 w-4"
+                data-testid="task-item-toggle-recurring-icon"
+              />
             </button>
           </div>
           <div className="relative flex items-center">
@@ -247,11 +254,19 @@ export default function TaskItem({
                   ? 'animate-pulse ring-2 ring-[#57886C] ring-offset-2 ring-offset-gray-100 dark:ring-offset-gray-900'
                   : ''
               }`}
+              data-testid="task-item-toggle-my-day"
+              data-planned={task.plannedFor ? 'true' : 'false'}
             >
               {task.plannedFor ? (
-                <CalendarX className="h-4 w-4" />
+                <CalendarX
+                  className="h-4 w-4"
+                  data-testid="task-item-toggle-my-day-icon"
+                />
               ) : (
-                <CalendarPlus className="h-4 w-4" />
+                <CalendarPlus
+                  className="h-4 w-4"
+                  data-testid="task-item-toggle-my-day-icon"
+                />
               )}
             </button>
             {showHelp && (
@@ -272,6 +287,7 @@ export default function TaskItem({
                     onClick={() => onCloseMyDayHelp?.()}
                     aria-label={t('actions.close')}
                     className="ml-2 rounded-full p-1 text-slate-400 transition hover:bg-slate-100 hover:text-slate-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#57886C] dark:text-gray-300 dark:hover:bg-gray-700/70 dark:hover:text-white"
+                    data-testid="task-item-help-dismiss"
                   >
                     ×
                   </button>
@@ -284,12 +300,19 @@ export default function TaskItem({
             aria-label={t('taskItem.deleteTask')}
             title={t('taskItem.deleteTask')}
             className="flex items-center justify-center rounded bg-transparent p-1 text-black focus:ring dark:text-white"
+            data-testid="task-item-delete"
           >
-            <Trash2 className="h-4 w-4" />
+            <Trash2
+              className="h-4 w-4"
+              data-testid="task-item-delete-icon"
+            />
           </button>
         </div>
         {repeatStatusVisible && (
-          <p className="text-right text-xs font-medium text-[#57886C]">
+          <p
+            className="text-right text-xs font-medium text-[#57886C]"
+            data-testid="task-item-recurring-status"
+          >
             {repeatButtonLabel}
           </p>
         )}
@@ -315,6 +338,7 @@ export default function TaskItem({
             <h2
               id={repeatDialogTitleId}
               className="text-xs font-semibold text-gray-900 dark:text-gray-100"
+              data-testid="task-item-recurring-title"
             >
               {t('taskItem.recurring.description')}
             </h2>
@@ -323,6 +347,7 @@ export default function TaskItem({
               onClick={() => setShowRecurringOptions(false)}
               aria-label={t('actions.close')}
               className="-mt-1 -mr-1 rounded p-1 text-gray-500 transition hover:bg-gray-100 hover:text-gray-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#57886C] dark:text-gray-300 dark:hover:bg-gray-800/80 dark:hover:text-white"
+              data-testid="task-item-recurring-close"
             >
               ×
             </button>
@@ -331,6 +356,7 @@ export default function TaskItem({
             <p
               id={repeatDialogLimitedHintId}
               className="text-[11px] text-gray-500 dark:text-gray-400"
+              data-testid="task-item-recurring-limit-hint"
             >
               {t('taskItem.recurring.limitedBySchedule')}
             </p>
@@ -346,6 +372,8 @@ export default function TaskItem({
                       ? 'border-[#57886C] text-[#57886C] dark:border-[#78a48c]'
                       : 'border-gray-200 text-gray-700 dark:border-gray-600 dark:text-gray-200'
                   }`}
+                  data-testid="task-item-recurring-day"
+                  data-day={day}
                 >
                   <input
                     type="checkbox"
@@ -353,6 +381,7 @@ export default function TaskItem({
                     checked={checked}
                     onChange={() => handleToggleRepeatDay(day)}
                     className="h-3.5 w-3.5"
+                    data-testid="task-item-recurring-day-input"
                   />
                   <span>{t(`workSchedulePage.week.${day}`)}</span>
                 </label>
@@ -362,6 +391,7 @@ export default function TaskItem({
           <p
             id={repeatDialogAutoAddHintId}
             className="text-[11px] text-gray-500 dark:text-gray-400"
+            data-testid="task-item-recurring-auto-hint"
           >
             {t('taskItem.recurring.autoAddHint')}
           </p>
@@ -370,6 +400,7 @@ export default function TaskItem({
               type="button"
               onClick={handleClearRepeat}
               className="text-left text-xs text-red-600 transition hover:underline focus-visible:ring focus-visible:ring-red-400 focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:text-red-400 dark:focus-visible:ring-offset-gray-900"
+              data-testid="task-item-recurring-clear"
             >
               {t('taskItem.recurring.remove')}
             </button>
@@ -391,6 +422,8 @@ export default function TaskItem({
       ref={setNodeRef}
       style={style}
       className="flex w-full"
+      data-testid={testId ?? 'task-item'}
+      data-task-id={task.id}
     >
       <div
         {...attributes}
@@ -398,6 +431,7 @@ export default function TaskItem({
         aria-describedby={handleDescribedBy || undefined}
         className="flex items-center pr-2 cursor-grab"
         style={{ touchAction: 'none' }}
+        data-testid="task-item-drag-handle"
       >
         <span
           id={dragHandleInstructionsId}
@@ -405,23 +439,29 @@ export default function TaskItem({
         >
           {keyboardInstructions}
         </span>
-        <GripVertical className="h-4 w-4 text-gray-500" />
+        <GripVertical
+          className="h-4 w-4 text-gray-500"
+          data-testid="task-item-drag-icon"
+        />
       </div>
       <div
         className={`flex flex-1 min-w-0 rounded ${
           highlighted ? 'ring-2 ring-[#57886C]' : ''
         }`}
+        data-testid="task-item-content"
       >
         {isInMyDay && (
           <div
             className="flex w-12 flex-none items-center justify-center rounded-l bg-blue-100 text-blue-700 dark:bg-[rgb(62,74,113)] dark:text-white md:w-14"
             title={statusLabel ?? undefined}
+            data-testid="task-item-status"
           >
             {StatusIcon ? (
               <>
                 <StatusIcon
                   className="h-5 w-5"
                   aria-hidden="true"
+                  data-testid="task-item-status-icon"
                 />
                 {statusLabel ? (
                   <span className="sr-only">{statusLabel}</span>
@@ -440,6 +480,7 @@ export default function TaskItem({
               ? 'bg-[#57886C] text-white'
               : 'bg-gray-100 dark:bg-gray-800'
           }`}
+          data-testid="task-item-card"
         >
           <div className="flex flex-col gap-2 md:flex-row md:items-start md:gap-6">
             {isEditing ? (
@@ -450,11 +491,13 @@ export default function TaskItem({
                 onKeyDown={handleTitleKeyDown}
                 className="w-full md:flex-1 rounded bg-gray-200 p-1 text-sm focus:ring dark:bg-gray-700"
                 autoFocus
+                data-testid="task-item-title-input"
               />
             ) : (
               <p
                 className="w-full md:flex-1 min-w-0"
                 onClick={startEditing}
+                data-testid="task-item-title"
               >
                 <LinkifiedText text={task.title} />
               </p>
@@ -471,6 +514,8 @@ export default function TaskItem({
                     key={tag}
                     style={{ backgroundColor: getTagColor(tag) }}
                     className="flex items-center rounded-full pl-2 pr-1 py-1 text-xs text-white"
+                    data-testid="task-item-tag"
+                    data-tag={tag}
                   >
                     <span className="mr-1 select-none">{tag}</span>
                     <button
@@ -478,6 +523,8 @@ export default function TaskItem({
                       aria-label={t('actions.removeTag')}
                       title={t('actions.removeTag')}
                       className="ml-1 flex h-4 w-4 items-center justify-center rounded-full hover:bg-black/20"
+                      data-testid="task-item-remove-tag"
+                      data-tag={tag}
                     >
                       ×
                     </button>
@@ -488,8 +535,12 @@ export default function TaskItem({
                   aria-label={t('actions.addTag')}
                   title={t('actions.addTag')}
                   className="flex h-4 w-4 items-center justify-center rounded-full hover:bg-black/20 text-black dark:text-white"
+                  data-testid="task-item-add-tag"
                 >
-                  <Plus className="h-4 w-4" />
+                  <Plus
+                    className="h-4 w-4"
+                    data-testid="task-item-add-tag-icon"
+                  />
                 </button>
               </div>
             )}
@@ -502,6 +553,7 @@ export default function TaskItem({
                   placeholder={t('taskItem.tagPlaceholder')}
                   list="existing-tags"
                   autoFocus={task.tags.length > 0}
+                  data-testid="task-item-tag-input"
                 />
                 <datalist id="existing-tags">
                   {allTags.map((tag: Tag) => (
@@ -520,6 +572,7 @@ export default function TaskItem({
                 title={t('actions.addTag')}
                 icon={Plus}
                 className="text-xs text-white"
+                data-testid="task-item-add-tag-link"
               >
                 {t('actions.addTag')}
               </Link>
@@ -537,6 +590,7 @@ export default function TaskItem({
                   onBlur={() => setIsPriorityEditing(false)}
                   className="rounded bg-gray-200 p-1 text-xs focus-visible:ring dark:bg-gray-700"
                   autoFocus
+                  data-testid="task-item-priority-select"
                 >
                   <option value="high">{t('priority.high')}</option>
                   <option value="medium">{t('priority.medium')}</option>
@@ -548,6 +602,7 @@ export default function TaskItem({
                   onClick={() => setIsPriorityEditing(true)}
                   onFocus={() => setIsPriorityEditing(true)}
                   className="rounded bg-transparent px-2 py-1 text-xs font-medium text-gray-700 transition hover:underline focus-visible:ring dark:text-gray-200"
+                  data-testid="task-item-priority"
                 >
                   {priorityLabels[task.priority as Priority]}
                 </button>

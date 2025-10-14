@@ -171,14 +171,21 @@ export default function Header() {
       <header
         ref={headerRef}
         className="relative grid grid-cols-3 items-center bg-gray-100 px-2 py-2 dark:bg-gray-950 md:px-4 md:py-3 lg:py-4"
+        data-testid="app-header"
       >
-        <div className="flex items-center gap-2">
+        <div
+          className="flex items-center gap-2"
+          data-testid="header-brand"
+        >
           <Icon />
           <span className="hidden text-lg font-semibold text-black dark:text-white sm:inline">
             CheckPlanner
           </span>
         </div>
-        <nav className="flex h-full items-center justify-center gap-4">
+        <nav
+          className="flex h-full items-center justify-center gap-4"
+          data-testid="header-nav"
+        >
           <Link
             href="/my-day"
             className={`relative flex h-full min-w-[80px] items-center justify-center whitespace-nowrap no-underline hover:no-underline focus:no-underline ${
@@ -186,6 +193,7 @@ export default function Header() {
                 ? 'after:absolute after:bottom-0 after:left-0 after:right-0 after:h-0.5 after:bg-black dark:after:bg-white'
                 : ''
             }`}
+            data-testid="nav-link-my-day"
           >
             {t('nav.myDay')}
             <span className="ml-1 rounded-full bg-blue-100 px-2 py-0.5 text-xs text-current dark:bg-[rgb(62,74,113)]">
@@ -199,6 +207,7 @@ export default function Header() {
                 ? 'after:absolute after:bottom-0 after:left-0 after:right-0 after:h-0.5 after:bg-black dark:after:bg-white'
                 : ''
             }`}
+            data-testid="nav-link-my-tasks"
           >
             {t('nav.myTasks')}
           </Link>
@@ -210,11 +219,18 @@ export default function Header() {
               aria-label={t('actions.toggleTheme')}
               title={t('actions.toggleTheme')}
               className="rounded p-2 hover:bg-gray-200 focus:bg-gray-200 dark:hover:bg-gray-800 dark:focus:bg-gray-800"
+              data-testid="theme-toggle-button"
             >
               {theme === 'dark' ? (
-                <Sun className="h-4 w-4" />
+                <Sun
+                  className="h-4 w-4"
+                  data-testid="theme-icon-sun"
+                />
               ) : (
-                <Moon className="h-4 w-4" />
+                <Moon
+                  className="h-4 w-4"
+                  data-testid="theme-icon-moon"
+                />
               )}
             </button>
             <div
@@ -226,11 +242,15 @@ export default function Header() {
                 aria-label={t('actions.language')}
                 title={t('actions.language')}
                 className="rounded p-2 hover:bg-gray-200 focus:bg-gray-200 dark:hover:bg-gray-800 dark:focus:bg-gray-800"
+                data-testid="language-menu-toggle"
               >
                 {language.toUpperCase()}
               </button>
               {showLang && (
-                <div className="absolute right-0 mt-2 w-48 rounded bg-gray-100 shadow dark:bg-gray-800 z-50">
+                <div
+                  className="absolute right-0 mt-2 w-48 rounded bg-gray-100 shadow dark:bg-gray-800 z-50"
+                  data-testid="language-menu"
+                >
                   {LANGUAGES.map(code => (
                     <button
                       key={code}
@@ -243,6 +263,7 @@ export default function Header() {
                           ? 'bg-gray-200 dark:bg-gray-700 font-semibold'
                           : ''
                       }`}
+                      data-testid={`language-option-${code}`}
                     >
                       {code.toUpperCase()} - {t(`lang.${code}`)}
                     </button>
@@ -257,8 +278,12 @@ export default function Header() {
             title={t('actions.notifications')}
             className="relative rounded p-2 hover:bg-gray-200 focus:bg-gray-200 dark:hover:bg-gray-800 dark:focus:bg-gray-800"
             ref={bellRef}
+            data-testid="header-notifications"
           >
-            <Bell className="h-4 w-4" />
+            <Bell
+              className="h-4 w-4"
+              data-testid="header-notifications-icon"
+            />
             {unreadNotifications > 0 && (
               <span className="absolute -right-1 -top-1 min-w-[16px] rounded-full bg-red-500 px-1 text-center text-[10px] leading-4 text-white">
                 {unreadNotifications}
@@ -276,10 +301,12 @@ export default function Header() {
                   top: popoverPosition.top,
                   right: popoverPosition.right,
                 }}
+                data-testid="header-notifications-popover"
               >
                 <div className="flex items-start gap-4">
                   <NotificationIcon
                     className={`mt-1 h-6 w-6 flex-shrink-0 ${getNotificationIconClasses(latestUnreadNotification.type)}`}
+                    data-testid="header-notifications-popover-icon"
                   />
                   <div className="min-w-0">
                     <p className="text-base font-semibold text-slate-900 dark:text-slate-100">
@@ -297,8 +324,12 @@ export default function Header() {
             aria-label={t('actions.settings')}
             title={t('actions.settings')}
             className="rounded p-2 hover:bg-gray-200 focus:bg-gray-200 dark:hover:bg-gray-800 dark:focus:bg-gray-800"
+            data-testid="header-settings"
           >
-            <Settings className="h-4 w-4" />
+            <Settings
+              className="h-4 w-4"
+              data-testid="header-settings-icon"
+            />
           </button>
         </div>
       </header>
@@ -306,18 +337,24 @@ export default function Header() {
         <div
           className="fixed inset-0 z-50 flex justify-end bg-black/50"
           onClick={() => setShowActions(false)}
+          data-testid="header-actions-overlay"
         >
           <div
             className="h-full w-64 bg-gray-100 p-4 dark:bg-gray-900"
             onClick={e => e.stopPropagation()}
+            data-testid="header-actions-panel"
           >
             <div className="flex flex-col gap-2">
               <Link
                 href="/settings/work-schedule"
                 onClick={() => setShowActions(false)}
                 className="flex items-center gap-2 rounded px-2 py-2 hover:bg-gray-200 dark:hover:bg-gray-800"
+                data-testid="header-actions-work-schedule"
               >
-                <CalendarClock className="h-4 w-4" />
+                <CalendarClock
+                  className="h-4 w-4"
+                  data-testid="header-actions-work-schedule-icon"
+                />
                 {t('actions.workSchedule')}
               </Link>
               <button
@@ -326,11 +363,18 @@ export default function Header() {
                   setShowActions(false);
                 }}
                 className="flex items-center gap-2 rounded px-2 py-2 hover:bg-gray-200 dark:hover:bg-gray-800"
+                data-testid="header-actions-theme-toggle"
               >
                 {theme === 'dark' ? (
-                  <Sun className="h-4 w-4" />
+                  <Sun
+                    className="h-4 w-4"
+                    data-testid="header-actions-theme-icon-sun"
+                  />
                 ) : (
-                  <Moon className="h-4 w-4" />
+                  <Moon
+                    className="h-4 w-4"
+                    data-testid="header-actions-theme-icon-moon"
+                  />
                 )}
                 {t('actions.toggleTheme')}
               </button>
@@ -338,8 +382,12 @@ export default function Header() {
                 href="/notifications"
                 onClick={() => setShowActions(false)}
                 className="flex items-center gap-2 rounded px-2 py-2 hover:bg-gray-200 dark:hover:bg-gray-800"
+                data-testid="header-actions-notifications"
               >
-                <Bell className="h-4 w-4" />
+                <Bell
+                  className="h-4 w-4"
+                  data-testid="header-actions-notifications-icon"
+                />
                 {t('actions.notifications')}
               </Link>
               <button
@@ -348,11 +396,20 @@ export default function Header() {
                   setShowActions(false);
                 }}
                 className="flex items-center gap-2 rounded px-2 py-2 hover:bg-gray-200 dark:hover:bg-gray-800"
+                data-testid="header-actions-export"
               >
-                <Download className="h-4 w-4" /> {t('actions.export')}
+                <Download
+                  className="h-4 w-4"
+                  data-testid="header-actions-export-icon"
+                />{' '}
+                {t('actions.export')}
               </button>
               <label className="flex cursor-pointer items-center gap-2 rounded px-2 py-2 hover:bg-gray-200 focus-within:bg-gray-200 dark:hover:bg-gray-800 dark:focus-within:bg-gray-800">
-                <Upload className="h-4 w-4" /> {t('actions.import')}
+                <Upload
+                  className="h-4 w-4"
+                  data-testid="header-actions-import-icon"
+                />{' '}
+                {t('actions.import')}
                 <input
                   type="file"
                   accept="application/json"
@@ -361,6 +418,7 @@ export default function Header() {
                     setShowActions(false);
                   }}
                   className="sr-only"
+                  data-testid="header-actions-import-input"
                 />
               </label>
               <button
@@ -369,12 +427,20 @@ export default function Header() {
                   setShowActions(false);
                 }}
                 className="flex items-center gap-2 rounded px-2 py-2 hover:bg-gray-200 dark:hover:bg-gray-800"
+                data-testid="header-actions-clear"
               >
-                <Trash2 className="h-4 w-4" /> {t('actions.clearAll')}
+                <Trash2
+                  className="h-4 w-4"
+                  data-testid="header-actions-clear-icon"
+                />{' '}
+                {t('actions.clearAll')}
               </button>
               <div className="rounded px-2 py-2 hover:bg-gray-200 focus-within:bg-gray-200 dark:hover:bg-gray-800 dark:focus-within:bg-gray-800">
                 <div className="flex items-center gap-2">
-                  <Languages className="h-4 w-4" />
+                  <Languages
+                    className="h-4 w-4"
+                    data-testid="header-actions-language-icon"
+                  />
                   <label
                     htmlFor="language-select"
                     className="flex-1 text-left text-sm font-medium text-gray-900 dark:text-gray-100"
@@ -390,6 +456,7 @@ export default function Header() {
                     setShowActions(false);
                   }}
                   className="mt-2 w-full rounded border border-gray-300 bg-white px-2 py-1 text-sm font-semibold text-gray-900 focus:border-gray-400 focus:outline-none dark:border-gray-700 dark:bg-gray-950 dark:text-gray-100 dark:focus:border-gray-500"
+                  data-testid="header-actions-language-select"
                 >
                   {LANGUAGES.map(code => (
                     <option
@@ -406,13 +473,17 @@ export default function Header() {
         </div>
       )}
       {showConfirm && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/50"
+          data-testid="header-confirm-overlay"
+        >
           <div
             ref={confirmDialogRef}
             role="dialog"
             aria-modal="true"
             aria-labelledby="confirm-delete-title"
             className="w-full max-w-sm rounded bg-gray-900 p-6 text-center text-gray-100"
+            data-testid="header-confirm-dialog"
           >
             <span
               tabIndex={0}
@@ -432,12 +503,14 @@ export default function Header() {
                 ref={confirmCancelButtonRef}
                 onClick={() => setShowConfirm(false)}
                 className="rounded bg-gray-700 px-3 py-1 hover:bg-gray-600 focus:bg-gray-600"
+                data-testid="header-confirm-cancel"
               >
                 {t('confirmDelete.cancel')}
               </button>
               <button
                 onClick={handleDelete}
                 className="rounded bg-[rgb(184,75,79)] px-3 py-1 text-white hover:brightness-110 focus:brightness-110"
+                data-testid="header-confirm-delete"
               >
                 {t('confirmDelete.delete')}
               </button>

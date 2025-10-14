@@ -21,16 +21,28 @@ export default function NotificationsPage() {
   );
 
   return (
-    <main className="mx-auto max-w-2xl space-y-4 px-4 py-16">
-      <h1 className="text-2xl font-bold">{t('notifications.title')}</h1>
+    <main
+      className="mx-auto max-w-2xl space-y-4 px-4 py-16"
+      data-testid="view-notifications"
+    >
+      <h1
+        className="text-2xl font-bold"
+        data-testid="notifications-title"
+      >
+        {t('notifications.title')}
+      </h1>
       {sorted.length === 0 ? (
-        <p>{t('notifications.empty')}</p>
+        <p data-testid="notifications-empty">{t('notifications.empty')}</p>
       ) : (
-        <div className="space-y-4">
+        <div
+          className="space-y-4"
+          data-testid="notifications-list"
+        >
           {sorted.map(n => (
             <NotificationCard
               key={n.id}
               notification={n}
+              data-testid="notifications-item"
             />
           ))}
         </div>

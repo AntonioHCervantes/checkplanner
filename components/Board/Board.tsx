@@ -4,7 +4,11 @@ import Column from '../Column/Column';
 import TaskCard from '../TaskCard/TaskCard';
 import useBoard, { UseBoardProps } from './useBoard';
 
-export default function Board(props: UseBoardProps) {
+interface BoardProps extends UseBoardProps {
+  'data-testid'?: string;
+}
+
+export default function Board({ 'data-testid': testId, ...props }: BoardProps) {
   const { state, actions } = useBoard(props);
   const { sensors, activeTask, columns, collisionDetection } = state;
   const { getTasks, handleDragStart, handleDragOver, handleDragEnd } = actions;
@@ -22,8 +26,14 @@ export default function Board(props: UseBoardProps) {
       onDragOver={handleDragOver}
       onDragEnd={handleDragEnd}
     >
-      <div className={scrollContainerClasses}>
-        <div className="flex w-full min-w-full gap-4">
+      <div
+        className={scrollContainerClasses}
+        data-testid={testId ?? 'board-container'}
+      >
+        <div
+          className="flex w-full min-w-full gap-4"
+          data-testid="board-columns"
+        >
           {columns.map(col => (
             <Column
               key={col.id}

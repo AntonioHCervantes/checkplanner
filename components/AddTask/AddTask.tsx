@@ -51,6 +51,7 @@ export default function AddTask(props: UseAddTaskProps) {
         }}
         autoComplete="off"
         className="flex flex-col gap-2 p-4 sm:flex-row sm:flex-wrap sm:items-center lg:my-2 lg:py-6"
+        data-testid="add-task-form"
       >
         <div className="relative w-full sm:flex-1">
           <label
@@ -66,6 +67,7 @@ export default function AddTask(props: UseAddTaskProps) {
             className="w-full rounded bg-gray-200 p-2 pr-8 text-sm focus:ring dark:bg-gray-800"
             placeholder={t('addTask.titlePlaceholder')}
             autoComplete="off"
+            data-testid="add-task-title"
           />
           <button
             type="button"
@@ -75,8 +77,12 @@ export default function AddTask(props: UseAddTaskProps) {
             className={`absolute right-2 top-1/2 -translate-y-1/2 ${
               isListening ? 'text-red-500' : 'text-gray-500 dark:text-gray-400'
             } hover:text-gray-700 dark:hover:text-gray-200`}
+            data-testid="add-task-voice-input"
           >
-            <Mic className="h-4 w-4" />
+            <Mic
+              className="h-4 w-4"
+              data-testid="add-task-voice-icon"
+            />
           </button>
         </div>
         <div
@@ -99,6 +105,7 @@ export default function AddTask(props: UseAddTaskProps) {
             className="w-full min-w-[245px] rounded bg-gray-200 p-2 text-sm focus:ring dark:bg-gray-800 sm:w-auto"
             placeholder={t('addTask.tagsPlaceholder')}
             list="existing-tags"
+            data-testid="add-task-tags"
           />
           <datalist id="existing-tags">
             {existingTags.map(tag => (
@@ -122,6 +129,8 @@ export default function AddTask(props: UseAddTaskProps) {
                   aria-label={t('actions.removeTag')}
                   title={t('actions.removeTag')}
                   className="ml-1 flex h-4 w-4 items-center justify-center rounded-full hover:bg-black/20"
+                  data-testid="add-task-remove-tag"
+                  data-tag={tag}
                 >
                   ×
                 </button>
@@ -142,6 +151,7 @@ export default function AddTask(props: UseAddTaskProps) {
               value={priority}
               onChange={e => setPriority(e.target.value as Priority)}
               className="w-full rounded bg-gray-200 p-2 text-sm focus:ring dark:bg-gray-800 lg:w-auto"
+              data-testid="add-task-priority"
             >
               <option value="high">{t('priority.high')}</option>
               <option value="medium">{t('priority.medium')}</option>
@@ -151,19 +161,28 @@ export default function AddTask(props: UseAddTaskProps) {
           <button
             type="submit"
             className="flex flex-1 items-center justify-center gap-1 rounded bg-[#57886C] px-3 py-2 text-sm text-white hover:brightness-110 focus:ring lg:flex-none lg:w-auto"
+            data-testid="add-task-submit"
           >
-            <Plus className="h-4 w-4" /> {t('addTask.addButton')}
+            <Plus
+              className="h-4 w-4"
+              data-testid="add-task-submit-icon"
+            />{' '}
+            {t('addTask.addButton')}
           </button>
         </div>
       </form>
       {showVoiceWarning && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black/50">
+        <div
+          className="fixed inset-0 flex items-center justify-center bg-black/50"
+          data-testid="add-task-voice-warning-overlay"
+        >
           <div
             ref={voiceWarningRef}
             role="dialog"
             aria-modal="true"
             aria-labelledby="voice-warning-title"
             className="w-full max-w-sm rounded bg-gray-900 p-6 text-center text-gray-100"
+            data-testid="add-task-voice-warning-dialog"
           >
             <span
               tabIndex={0}
@@ -182,6 +201,7 @@ export default function AddTask(props: UseAddTaskProps) {
               ref={voiceWarningCloseButtonRef}
               onClick={closeVoiceWarning}
               className="rounded bg-gray-700 px-3 py-1 hover:bg-gray-600 focus:bg-gray-600"
+              data-testid="add-task-voice-warning-close"
             >
               {t('actions.close')}
             </button>

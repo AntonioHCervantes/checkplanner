@@ -121,6 +121,21 @@ existing helpers so SSR remains safe.
   `components/Foo/_helpers/__tests__` to keep the codebase modular and well
   covered.
 
+## Agent automation & `data-testid` strategy
+
+- Treat the existing `data-testid` attributes as part of the project’s public
+  API. They provide stable anchors for Playwright MCP and other automations.
+- Never rename or remove a `data-testid` unless you coordinate the downstream
+  automation update in the same change.
+- When you add new interactive elements (buttons, icons, inputs, dialogs), new
+  views, or layout wrappers, assign deterministic `data-testid` values that fit
+  the existing naming scheme.
+- Ensure the `AppReadyMarker` continues to render `data-testid="app-ready"` only
+  after hydration and UI mounting complete so agents can detect when the
+  interface is ready for interaction.
+- Document any new selectors directly in component-level README files or
+  relevant docs to keep automation consumers informed.
+
 ## Internationalization requirements
 
 All user-facing strings must come from `useI18n()`:
