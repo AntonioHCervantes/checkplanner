@@ -24,6 +24,11 @@ If any of these fail, do not open or update a PR. Fix first.
 
 - Write TypeScript and follow ESLint + Prettier (Tailwind plugin included); keep
   formatting clean and adhere to Conventional Commits.
+- Maintain the agent-facing `data-testid` attributes introduced across the app.
+  Treat them as part of the public API—do not rename or remove them. When you
+  create new interactive UI, views, or layout components, add stable
+  `data-testid` hooks so automation can continue to control the experience
+  predictably.
 - Structure components using the presentational + hook pattern. Keep the UI file
   focused on markup and styling, move state/actions into a colocated hook that
   returns only two top-level keys—`state` for data (including refs, ids, and

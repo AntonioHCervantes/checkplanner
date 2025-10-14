@@ -13,9 +13,10 @@ const options = [
 
 interface TimerProps {
   taskId: string;
+  'data-testid'?: string;
 }
 
-export default function Timer({ taskId }: TimerProps) {
+export default function Timer({ taskId, 'data-testid': testId }: TimerProps) {
   const timer = useStore(state => state.timers[taskId]);
   const setTimerDuration = useStore(state => state.setTimerDuration);
   const toggleTimer = useStore(state => state.toggleTimer);
@@ -47,12 +48,16 @@ export default function Timer({ taskId }: TimerProps) {
   );
 
   return (
-    <div className="mt-2 flex items-center gap-2">
+    <div
+      className="mt-2 flex items-center gap-2"
+      data-testid={testId ?? 'task-timer'}
+    >
       <select
         value={duration}
         onChange={handleDurationChange}
         onKeyDown={handleControlKeyDown}
         className="rounded bg-gray-200 p-1 text-sm dark:bg-gray-700"
+        data-testid="task-timer-duration"
       >
         {options.map(o => (
           <option
@@ -70,22 +75,36 @@ export default function Timer({ taskId }: TimerProps) {
           title={running ? t('timer.pause') : t('timer.start')}
           className="rounded bg-blue-500 p-1 text-white hover:brightness-110 focus:ring"
           onKeyDown={handleControlKeyDown}
+          data-testid="task-timer-toggle"
         >
           {running ? (
-            <Pause className="h-4 w-4" />
+            <Pause
+              className="h-4 w-4"
+              data-testid="task-timer-pause-icon"
+            />
           ) : (
-            <Play className="h-4 w-4" />
+            <Play
+              className="h-4 w-4"
+              data-testid="task-timer-play-icon"
+            />
           )}
         </button>
-        <span className="w-12 text-right text-xs">
+        <span
+          className="w-12 text-right text-xs"
+          data-testid="task-timer-remaining"
+        >
           {Math.floor(timeLeft / 60)}:
           {(timeLeft % 60).toString().padStart(2, '0')}
         </span>
       </div>
-      <div className="h-2 flex-1 rounded bg-gray-300 dark:bg-gray-700">
+      <div
+        className="h-2 flex-1 rounded bg-gray-300 dark:bg-gray-700"
+        data-testid="task-timer-progress"
+      >
         <div
           className="h-2 rounded bg-blue-500 dark:bg-blue-400"
           style={{ width: `${progress}%` }}
+          data-testid="task-timer-progress-bar"
         />
       </div>
     </div>

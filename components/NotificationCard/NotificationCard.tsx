@@ -9,9 +9,13 @@ import useNotificationCard, {
 
 interface Props {
   notification: Notification;
+  'data-testid'?: string;
 }
 
-export default function NotificationCard({ notification }: Props) {
+export default function NotificationCard({
+  notification,
+  'data-testid': testId,
+}: Props) {
   const {
     state: {
       icon: Icon,
@@ -59,7 +63,11 @@ export default function NotificationCard({ notification }: Props) {
   };
 
   return (
-    <div className="relative overflow-hidden rounded-lg border border-gray-200 bg-white p-6 shadow-sm transition hover:border-blue-200 dark:border-gray-700 dark:bg-gray-900 dark:hover:border-blue-700/60">
+    <div
+      className="relative overflow-hidden rounded-lg border border-gray-200 bg-white p-6 shadow-sm transition hover:border-blue-200 dark:border-gray-700 dark:bg-gray-900 dark:hover:border-blue-700/60"
+      data-testid={testId ?? 'notification-card'}
+      data-notification-id={notification.id}
+    >
       {!isWelcomeNotification && (
         <button
           type="button"
@@ -67,10 +75,12 @@ export default function NotificationCard({ notification }: Props) {
           title={dismissLabel}
           onClick={handleDismiss}
           className="absolute right-4 top-4 rounded-full p-1 text-gray-400 transition hover:bg-gray-100 hover:text-gray-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-500 dark:text-gray-500 dark:hover:bg-gray-800 dark:hover:text-gray-300"
+          data-testid="notification-dismiss"
         >
           <X
             className="h-4 w-4"
             aria-hidden="true"
+            data-testid="notification-dismiss-icon"
           />
         </button>
       )}
@@ -78,6 +88,7 @@ export default function NotificationCard({ notification }: Props) {
         <Icon
           className={`mt-1 h-6 w-6 flex-shrink-0 ${iconClassName}`}
           aria-hidden="true"
+          data-testid="notification-icon"
         />
         <div className="flex-1 space-y-3 pr-8">
           <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
@@ -92,6 +103,7 @@ export default function NotificationCard({ notification }: Props) {
                 <span
                   key={action.key}
                   className="inline-flex"
+                  data-testid="notification-action"
                 >
                   {action.type === 'button' ? (
                     <button
@@ -100,6 +112,7 @@ export default function NotificationCard({ notification }: Props) {
                       disabled={action.disabled}
                       title={action.title}
                       className={getActionClasses(action)}
+                      data-testid="notification-action-button"
                     >
                       {renderActionIcon(action)}
                       {action.label}
@@ -108,6 +121,7 @@ export default function NotificationCard({ notification }: Props) {
                     <Link
                       href={action.href}
                       className={getActionClasses(action)}
+                      data-testid="notification-action-link"
                     >
                       {renderActionIcon(action)}
                       {action.label}
@@ -118,6 +132,7 @@ export default function NotificationCard({ notification }: Props) {
                       target="_blank"
                       rel="noopener noreferrer"
                       className={getActionClasses(action)}
+                      data-testid="notification-action-external"
                     >
                       {renderActionIcon(action)}
                       {action.label}

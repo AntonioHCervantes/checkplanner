@@ -8,6 +8,7 @@ export default function Icon() {
       role="img"
       aria-label="CheckPlanner"
       className="h-10 w-10 md:h-20 md:w-20"
+      data-testid="app-logo"
     >
       <rect
         x="15"

@@ -6,12 +6,14 @@ interface ProgressBarProps {
   percent: number;
   onClearCompleted?: () => void;
   clearCompletedLabel?: string;
+  'data-testid'?: string;
 }
 
 export default function ProgressBar({
   percent,
   onClearCompleted,
   clearCompletedLabel,
+  'data-testid': testId,
 }: ProgressBarProps) {
   const { t } = useI18n();
 
@@ -32,8 +34,14 @@ export default function ProgressBar({
   }
 
   return (
-    <div className="p-4">
-      <div className="h-[3px] w-full rounded bg-gray-200 opacity-30 dark:bg-gray-700">
+    <div
+      className="p-4"
+      data-testid={testId ?? 'progress-bar'}
+    >
+      <div
+        className="h-[3px] w-full rounded bg-gray-200 opacity-30 dark:bg-gray-700"
+        data-testid="progress-track"
+      >
         <div
           className={`h-full rounded ${colorClass}`}
           style={{ width: `${percent}%` }}
@@ -42,16 +50,21 @@ export default function ProgressBar({
           aria-valuemax={100}
           aria-valuenow={percent}
           aria-label={`${percent}% ${message}`}
+          data-testid="progress-indicator"
         />
       </div>
-      <div className="mt-4 flex flex-wrap items-center justify-center gap-2 text-sm text-gray-600 dark:text-gray-400">
-        <span>{message}</span>
+      <div
+        className="mt-4 flex flex-wrap items-center justify-center gap-2 text-sm text-gray-600 dark:text-gray-400"
+        data-testid="progress-summary"
+      >
+        <span data-testid="progress-message">{message}</span>
         <span className="sr-only">{percent}%</span>
         {showClearAction ? (
           <button
             type="button"
             onClick={onClearCompleted}
             className="rounded px-1 font-medium text-[#57886C] underline-offset-2 hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#57886C]"
+            data-testid="progress-clear-completed"
           >
             {clearCompletedLabel}
           </button>

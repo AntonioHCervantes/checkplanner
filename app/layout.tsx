@@ -10,6 +10,7 @@ import ServiceWorker from '../components/ServiceWorker';
 import TaskTimerManager from '../components/TaskTimerManager/TaskTimerManager';
 import WorkScheduleManager from '../components/WorkScheduleManager/WorkScheduleManager';
 import RecurringTaskManager from '../components/RecurringTaskManager/RecurringTaskManager';
+import AppReadyMarker from '../components/AppReadyMarker';
 
 const description =
   'CheckPlanner is a free, fast, private, and open source task manager that boosts your productivity and personal organization at work.';
@@ -50,10 +51,18 @@ export const viewport: Viewport = {
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="en">
-      <body className="flex min-h-screen flex-col bg-white text-gray-900 dark:bg-gray-900 dark:text-gray-100">
+      <body
+        className="flex min-h-screen flex-col bg-white text-gray-900 dark:bg-gray-900 dark:text-gray-100"
+        data-testid="app-body"
+      >
         <I18nProvider>
           <Header />
-          <main className="flex-1">{children}</main>
+          <main
+            className="flex-1"
+            data-testid="app-content"
+          >
+            {children}
+          </main>
           <Footer />
           <Toaster
             position="top-center"
@@ -70,6 +79,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
           <RecurringTaskManager />
           <WelcomeModal />
           <ServiceWorker />
+          <AppReadyMarker />
         </I18nProvider>
       </body>
     </html>

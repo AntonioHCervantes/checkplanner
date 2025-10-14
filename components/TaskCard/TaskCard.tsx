@@ -103,6 +103,8 @@ export default function TaskCard(props: UseTaskCardProps) {
       aria-describedby={describedBy || undefined}
       className={cardClasses}
       data-main-task={isMainTask || undefined}
+      data-testid="task-card"
+      data-task-id={task.id}
     >
       <p
         id={instructionId}
@@ -116,7 +118,10 @@ export default function TaskCard(props: UseTaskCardProps) {
             mode === 'my-day' ? 'items-start' : 'items-center'
           }`}
         >
-          <span className="mr-2 min-w-0 flex-1">
+          <span
+            className="mr-2 min-w-0 flex-1"
+            data-testid="task-card-title"
+          >
             <LinkifiedText text={task.title} />
           </span>
           <div
@@ -135,8 +140,12 @@ export default function TaskCard(props: UseTaskCardProps) {
                     title={t('taskCard.markInProgress')}
                     className="flex h-8 w-8 items-center justify-center rounded-full text-blue-400 transition-colors duration-150 hover:text-blue-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-300/60 focus-visible:ring-offset-2"
                     onKeyDown={handleActionKeyDown}
+                    data-testid="task-card-mark-in-progress"
                   >
-                    <Play className="h-4 w-4" />
+                    <Play
+                      className="h-4 w-4"
+                      data-testid="task-card-mark-in-progress-icon"
+                    />
                   </button>
                 )}
                 {task.dayStatus === 'doing' && (
@@ -146,8 +155,12 @@ export default function TaskCard(props: UseTaskCardProps) {
                     title={t('taskCard.markDone')}
                     className="flex h-8 w-8 items-center justify-center rounded-full text-green-400 transition-colors duration-150 hover:text-green-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-300/60 focus-visible:ring-offset-2"
                     onKeyDown={handleActionKeyDown}
+                    data-testid="task-card-mark-done"
                   >
-                    <Check className="h-4 w-4" />
+                    <Check
+                      className="h-4 w-4"
+                      data-testid="task-card-mark-done-icon"
+                    />
                   </button>
                 )}
                 {task.dayStatus === 'done' && (
@@ -157,8 +170,12 @@ export default function TaskCard(props: UseTaskCardProps) {
                     title={t('taskCard.deleteTask')}
                     className="flex h-8 w-8 items-center justify-center rounded-full text-red-400 transition-colors duration-150 hover:text-red-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-300/60 focus-visible:ring-offset-2"
                     onKeyDown={handleActionKeyDown}
+                    data-testid="task-card-delete"
                   >
-                    <Trash2 className="h-4 w-4" />
+                    <Trash2
+                      className="h-4 w-4"
+                      data-testid="task-card-delete-icon"
+                    />
                   </button>
                 )}
                 <button
@@ -173,10 +190,12 @@ export default function TaskCard(props: UseTaskCardProps) {
                       : 'text-gray-400 hover:text-amber-400 dark:text-gray-500 dark:hover:text-amber-300'
                   }`}
                   onKeyDown={handleActionKeyDown}
+                  data-testid="task-card-toggle-main"
                 >
                   <Star
                     className="h-4 w-4"
                     strokeWidth={isMainTask ? 1.5 : 2}
+                    data-testid="task-card-toggle-main-icon"
                   />
                 </button>
               </>
@@ -187,8 +206,12 @@ export default function TaskCard(props: UseTaskCardProps) {
                   aria-label={t('taskCard.markDone')}
                   title={t('taskCard.markDone')}
                   className="flex h-8 w-8 items-center justify-center rounded-full text-green-400 transition-colors duration-150 hover:text-green-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-300/60 focus-visible:ring-offset-2"
+                  data-testid="task-card-mark-done"
                 >
-                  <Check className="h-4 w-4" />
+                  <Check
+                    className="h-4 w-4"
+                    data-testid="task-card-mark-done-icon"
+                  />
                 </button>
               )
             )}
@@ -200,6 +223,8 @@ export default function TaskCard(props: UseTaskCardProps) {
               key={tag}
               style={{ backgroundColor: getTagColor(tag) }}
               className="rounded-full px-2 py-1 text-xs text-white"
+              data-testid="task-card-tag"
+              data-tag={tag}
             >
               {tag}
             </span>
@@ -215,10 +240,16 @@ export default function TaskCard(props: UseTaskCardProps) {
               className="mt-4"
               aria-expanded={isTimerVisible}
               onKeyDown={handleActionKeyDown}
+              data-testid="task-card-toggle-timer"
             >
               {t('taskCard.showTimer')}
             </Link>
-            {isTimerVisible && <Timer taskId={task.id} />}
+            {isTimerVisible && (
+              <Timer
+                taskId={task.id}
+                data-testid="task-card-timer"
+              />
+            )}
           </>
         )}
       </div>

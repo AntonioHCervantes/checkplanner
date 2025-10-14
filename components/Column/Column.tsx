@@ -36,13 +36,22 @@ export default function Column({
     <div
       ref={setNodeRef}
       className={containerClasses}
+      data-testid={`board-column-${id}`}
+      data-column-mode={mode}
     >
-      <div className="mb-6 flex items-center justify-between gap-2">
-        <h2 className="flex items-center gap-2 text-lg font-semibold">
+      <div
+        className="mb-6 flex items-center justify-between gap-2"
+        data-testid="column-header"
+      >
+        <h2
+          className="flex items-center gap-2 text-lg font-semibold"
+          data-testid="column-title"
+        >
           {StatusIcon ? (
             <StatusIcon
               aria-hidden="true"
               className="h-5 w-5 text-blue-600 dark:text-blue-200"
+              data-testid="column-status-icon"
             />
           ) : null}
           {title}
@@ -52,6 +61,7 @@ export default function Column({
             type="button"
             onClick={clearCompletedMyDayTasks}
             className="rounded px-1 text-sm font-medium text-[#57886C] underline-offset-2 hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#57886C]"
+            data-testid="column-clear-completed"
           >
             {t('myDayPage.progress.clearCompleted')}
           </button>
@@ -62,7 +72,10 @@ export default function Column({
         items={tasks.map(t => t.id)}
         strategy={verticalListSortingStrategy}
       >
-        <div className={listClasses}>
+        <div
+          className={listClasses}
+          data-testid="column-task-list"
+        >
           {tasks.map(task => (
             <TaskCard
               key={task.id}

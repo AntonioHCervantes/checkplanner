@@ -25,11 +25,18 @@ export default function MyDayPage() {
           ? undefined
           : 'flex flex-col items-center justify-center px-4 py-16 text-center'
       }
+      data-testid="view-my-day"
     >
       {hasMyDayTasks ? (
         <>
-          <ProgressBar percent={progressPercent} />
-          <Board mode="my-day" />
+          <ProgressBar
+            percent={progressPercent}
+            data-testid="my-day-progress"
+          />
+          <Board
+            mode="my-day"
+            data-testid="my-day-board"
+          />
         </>
       ) : (
         <>
@@ -39,6 +46,7 @@ export default function MyDayPage() {
           <Link
             href="/my-tasks"
             className="rounded bg-[#57886C] px-4 py-2 text-white hover:brightness-110 focus:ring"
+            data-testid="my-day-go-to-tasks"
           >
             {t('myDayPage.goToMyTasks')}
           </Link>
