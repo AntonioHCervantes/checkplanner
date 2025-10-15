@@ -853,7 +853,7 @@ export const useStore = create<Store>((set, get) => ({
     const a = document.createElement('a');
     const today = new Date().toISOString().split('T')[0];
     a.href = url;
-    a.download = `localquickplanner-${today}.json`;
+    a.download = `checkplanner-${today}.json`;
     a.click();
     URL.revokeObjectURL(url);
   },
