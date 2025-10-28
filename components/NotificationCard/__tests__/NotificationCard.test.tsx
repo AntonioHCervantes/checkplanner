@@ -13,15 +13,15 @@ const baseNotification = {
 };
 
 const initialState = useStore.getState();
-const removeNotificationMock = jest.fn();
+const dismissNotificationMock = jest.fn();
 const dismissibleNotification = {
   ...baseNotification,
   id: 'other-notification',
 };
 
 beforeEach(() => {
-  removeNotificationMock.mockReset();
-  useStore.setState({ removeNotification: removeNotificationMock });
+  dismissNotificationMock.mockReset();
+  useStore.setState({ dismissNotification: dismissNotificationMock });
 });
 
 afterEach(() => {
@@ -97,6 +97,6 @@ describe('NotificationCard', () => {
 
     await user.click(dismissButton);
 
-    expect(removeNotificationMock).toHaveBeenCalledWith('other-notification');
+    expect(dismissNotificationMock).toHaveBeenCalledWith('other-notification');
   });
 });

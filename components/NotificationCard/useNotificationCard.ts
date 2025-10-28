@@ -33,7 +33,7 @@ interface Options {
 }
 
 export default function useNotificationCard({ notification }: Options) {
-  const removeNotification = useStore(state => state.removeNotification);
+  const dismissNotification = useStore(state => state.dismissNotification);
   const { t } = useI18n();
   const { canInstall, isInstalled, promptInstall } = usePwaInstallPrompt();
 
@@ -57,8 +57,8 @@ export default function useNotificationCard({ notification }: Options) {
   const isWelcomeNotification = notification.id === 'welcome';
 
   const handleDismiss = useCallback(() => {
-    removeNotification(notification.id);
-  }, [notification.id, removeNotification]);
+    dismissNotification(notification.id);
+  }, [dismissNotification, notification.id]);
 
   const installDisabled = isInstalled || !canInstall;
   const installTitle = isInstalled

@@ -48,9 +48,9 @@ describe('useNotificationCard', () => {
   });
 
   it('dismisses notifications', () => {
-    const removeNotification = jest.fn();
+    const dismissNotification = jest.fn();
     act(() => {
-      useStore.setState({ removeNotification });
+      useStore.setState({ dismissNotification });
     });
 
     const { result } = renderHook(() =>
@@ -70,6 +70,6 @@ describe('useNotificationCard', () => {
       result.current.actions.handleDismiss();
     });
 
-    expect(removeNotification).toHaveBeenCalledWith('test');
+    expect(dismissNotification).toHaveBeenCalledWith('test');
   });
 });

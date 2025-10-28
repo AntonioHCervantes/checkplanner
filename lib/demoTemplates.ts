@@ -73,6 +73,7 @@ const createTemplateState = (
     tags,
     order,
     notifications: [],
+    dismissedNotifications: [],
     timers: {},
     mainMyDayTaskId: null,
     workSchedule: createEmptyWorkSchedule(),
@@ -83,7 +84,7 @@ const createTemplateState = (
         lastNotifiedDate: null,
       },
     },
-    version: 10,
+    version: 11,
   };
 };
 
