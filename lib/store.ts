@@ -203,11 +203,12 @@ const defaultState: PersistedState = {
     'day-done': [],
   },
   notifications: [createWelcomeNotification()],
+  dismissedNotifications: [],
   timers: {},
   mainMyDayTaskId: null,
   workSchedule: createEmptyWorkSchedule(),
   workPreferences: defaultWorkPreferences,
-  version: 10,
+  version: 11,
 };
 
 type Store = PersistedState & {
@@ -246,6 +247,7 @@ type Store = PersistedState & {
   clearAll: () => void;
   addNotification: (n: Notification) => void;
   removeNotification: (id: string) => void;
+  dismissNotification: (id: string) => void;
   markNotificationRead: (id: string) => void;
   markAllNotificationsRead: () => void;
   setWorkScheduleDay: (day: Weekday, slots: number[]) => void;
@@ -337,6 +339,12 @@ if (persisted) {
   }
   if (persisted.version < 10) {
     persisted.version = 10;
+  }
+  if (!Array.isArray((persisted as any).dismissedNotifications)) {
+    (persisted as any).dismissedNotifications = [];
+  }
+  if (persisted.version < 11) {
+    persisted.version = 11;
   }
   persisted.tasks = persisted.tasks.map(task => {
     const sanitizedRepeat = sanitizeTaskRepeat((task as any).repeat);
@@ -524,6 +532,7 @@ export const useStore = create<Store>((set, get) => ({
         tags: state.tags,
         order: newOrder,
         notifications: state.notifications,
+        dismissedNotifications: state.dismissedNotifications,
         timers,
         mainMyDayTaskId,
         workSchedule: state.workSchedule,
@@ -862,6 +871,15 @@ export const useStore = create<Store>((set, get) => ({
       ...defaultState,
       ...data,
       notifications: ensureWelcomeNotification(data.notifications),
+      dismissedNotifications: Array.isArray(data.dismissedNotifications)
+        ? Array.from(
+            new Set(
+              data.dismissedNotifications.filter(
+                (value): value is string => typeof value === 'string'
+              )
+            )
+          )
+        : [],
       timers: data.timers ?? {},
       mainMyDayTaskId: data.mainMyDayTaskId ?? null,
       workSchedule: sanitizeWorkSchedule(data.workSchedule),
@@ -882,6 +900,15 @@ export const useStore = create<Store>((set, get) => ({
   removeNotification: id => {
     set(state => ({
       notifications: state.notifications.filter(n => n.id !== id),
+    }));
+    saveState(get());
+  },
+  dismissNotification: id => {
+    set(state => ({
+      notifications: state.notifications.filter(n => n.id !== id),
+      dismissedNotifications: state.dismissedNotifications.includes(id)
+        ? state.dismissedNotifications
+        : [...state.dismissedNotifications, id],
     }));
     saveState(get());
   },

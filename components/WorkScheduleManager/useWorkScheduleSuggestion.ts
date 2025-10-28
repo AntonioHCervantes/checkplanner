@@ -13,6 +13,16 @@ export function useWorkScheduleSuggestion() {
       const existing = state.notifications.find(
         notification => notification.id === SUGGESTION_NOTIFICATION_ID
       );
+      const isDismissed = state.dismissedNotifications.includes(
+        SUGGESTION_NOTIFICATION_ID
+      );
+
+      if (isDismissed) {
+        if (existing) {
+          state.removeNotification(SUGGESTION_NOTIFICATION_ID);
+        }
+        return;
+      }
 
       if (shouldSuggest) {
         if (!existing) {
