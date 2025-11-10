@@ -12,7 +12,7 @@ export default function TasksView() {
   const {
     tasks,
     tags,
-    activeTags,
+    activeTag,
     tagToRemove,
     highlightedId,
     hasTasks,
@@ -79,7 +79,7 @@ export default function TasksView() {
       </div>
       <TagFilter
         tags={tags}
-        activeTags={activeTags}
+        activeTag={activeTag}
         toggleTag={toggleTagFilter}
         showAll={resetTagFilter}
         removeTag={removeTag}

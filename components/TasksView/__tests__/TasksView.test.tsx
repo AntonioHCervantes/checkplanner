@@ -34,8 +34,8 @@ describe('TasksView', () => {
       state: {
         tasks: [],
         tags: [],
-        activeTags: [],
-        tagToRemove: { label: 'work' },
+        activeTag: 'all',
+        tagToRemove: 'work',
         highlightedId: null,
       },
       actions: {
@@ -61,8 +61,8 @@ describe('TasksView', () => {
       state: {
         tasks: [],
         tags: [],
-        activeTags: [],
-        tagToRemove: { label: 'work' },
+        activeTag: 'all',
+        tagToRemove: 'work',
         highlightedId: null,
       },
       actions: {
