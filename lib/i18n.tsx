@@ -126,6 +126,7 @@ const translations: Record<Language, any> = {
       activeIndicator: '(active)',
       confirmDelete:
         'Some tasks are using this tag. If you remove it, those tasks will lose the tag. Continue?',
+      tabsLabel: 'Filter tasks by tag',
     },
     welcomeModal: {
       title: 'CheckPlanner',
@@ -505,6 +506,7 @@ const translations: Record<Language, any> = {
       activeIndicator: '(activo)',
       confirmDelete:
         'Algunas tareas usan esta etiqueta. Si la eliminas, esas tareas perderán la etiqueta. ¿Continuar?',
+      tabsLabel: 'Filtrar tareas por etiqueta',
     },
     welcomeModal: {
       title: 'CheckPlanner',
@@ -891,6 +893,7 @@ const translations: Record<Language, any> = {
       activeIndicator: '(actif)',
       confirmDelete:
         'Certaines tâches utilisent cette étiquette. Si vous la supprimez, ces tâches perdront l’étiquette. Continuer ?',
+      tabsLabel: 'Filtrer les tâches par étiquette',
     },
     welcomeModal: {
       title: 'CheckPlanner',
@@ -1276,6 +1279,7 @@ const translations: Record<Language, any> = {
       activeIndicator: '(attivo)',
       confirmDelete:
         'Alcune attività utilizzano questa etichetta. Se la rimuovi, quelle attività perderanno l’etichetta. Continuare?',
+      tabsLabel: 'Filtra le attività per etichetta',
     },
     welcomeModal: {
       title: 'CheckPlanner',
@@ -1658,6 +1662,7 @@ const translations: Record<Language, any> = {
       activeIndicator: '(aktiv)',
       confirmDelete:
         'Einige Aufgaben verwenden dieses Etikett. Wenn du es entfernst, verlieren diese Aufgaben das Etikett. Fortfahren?',
+      tabsLabel: 'Aufgaben nach Etikett filtern',
     },
     welcomeModal: {
       title: 'CheckPlanner',

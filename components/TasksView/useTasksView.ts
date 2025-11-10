@@ -1,14 +1,17 @@
 'use client';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { useStore } from '../../lib/store';
 import { loadState } from '../../lib/storage';
 import { Priority } from '../../lib/types';
 
+const ALL_TAB = 'all';
+
 export default function useTasksView() {
   const store = useStore();
-  const [activeTags, setActiveTags] = useState<string[]>([]);
+  const [activeTab, setActiveTab] = useState<string>(ALL_TAB);
   const [tagToRemove, setTagToRemove] = useState<string | null>(null);
   const [highlightedId, setHighlightedId] = useState<string | null>(null);
+  const hasInteractedRef = useRef(false);
 
   useEffect(() => {
     if (store.tags.length === 0) {
@@ -18,22 +21,27 @@ export default function useTasksView() {
   }, [store]);
 
   useEffect(() => {
-    setActiveTags(prev => {
+    setActiveTab(prev => {
       const labels = store.tags.map(t => t.label);
-      const existing = prev.filter(l => labels.includes(l));
-      const newTags = labels.filter(l => !prev.includes(l));
-      return [...existing, ...newTags];
+      const favoriteTag = store.tags.find(tag => tag.favorite);
+      if (prev !== ALL_TAB && !labels.includes(prev)) {
+        return favoriteTag?.label ?? ALL_TAB;
+      }
+      if (!hasInteractedRef.current && favoriteTag && prev === ALL_TAB) {
+        return favoriteTag.label;
+      }
+      return prev;
     });
   }, [store.tags]);
 
   const toggleTagFilter = (label: string) => {
-    setActiveTags(prev =>
-      prev.includes(label) ? prev.filter(t => t !== label) : [...prev, label]
-    );
+    hasInteractedRef.current = true;
+    setActiveTab(label);
   };
 
   const resetTagFilter = () => {
-    setActiveTags(store.tags.map(t => t.label));
+    hasInteractedRef.current = true;
+    setActiveTab(ALL_TAB);
   };
 
   const removeTag = (label: string) => {
@@ -43,24 +51,46 @@ export default function useTasksView() {
       return;
     }
     store.removeTag(label);
-    setActiveTags(prev => prev.filter(tg => tg !== label));
+    setActiveTab(prev => {
+      if (prev === label) {
+        const favoriteTag = store.tags.find(
+          tag => tag.label !== label && tag.favorite
+        );
+        if (favoriteTag) {
+          return favoriteTag.label;
+        }
+        return ALL_TAB;
+      }
+      return prev;
+    });
   };
 
   const confirmRemoveTag = () => {
     if (!tagToRemove) return;
     store.removeTag(tagToRemove);
-    setActiveTags(prev => prev.filter(tg => tg !== tagToRemove));
+    setActiveTab(prev => {
+      if (prev === tagToRemove) {
+        const favoriteTag = store.tags.find(
+          tag => tag.label !== tagToRemove && tag.favorite
+        );
+        if (favoriteTag) {
+          return favoriteTag.label;
+        }
+        return ALL_TAB;
+      }
+      return prev;
+    });
     setTagToRemove(null);
   };
 
   const cancelRemoveTag = () => setTagToRemove(null);
 
   const filteredTasks = useMemo(() => {
-    return store.tasks.filter(task => {
-      if (task.tags.length === 0) return true;
-      return task.tags.some(tag => activeTags.includes(tag));
-    });
-  }, [store.tasks, activeTags]);
+    if (activeTab === ALL_TAB) {
+      return store.tasks;
+    }
+    return store.tasks.filter(task => task.tags.includes(activeTab));
+  }, [store.tasks, activeTab]);
 
   const orderedTasks = useMemo(() => {
     const ids = [
@@ -76,15 +106,14 @@ export default function useTasksView() {
     return [...list, ...remaining];
   }, [filteredTasks, store.order]);
 
-  const totalTags = store.tags.length;
   const hasTasks = store.tasks.length > 0;
-  const isFiltering = totalTags > 0 && activeTags.length !== totalTags;
+  const isFiltering = activeTab !== ALL_TAB;
 
   return {
     state: {
       tasks: orderedTasks,
       tags: store.tags,
-      activeTags,
+      activeTag: activeTab,
       tagToRemove,
       highlightedId,
       hasTasks,

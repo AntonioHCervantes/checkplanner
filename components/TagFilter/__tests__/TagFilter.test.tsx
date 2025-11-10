@@ -36,7 +36,7 @@ describe('TagFilter', () => {
       />
     );
 
-    fireEvent.click(screen.getByText('work'));
+    fireEvent.click(screen.getByRole('tab', { name: /work/i }));
     expect(toggleTag).toHaveBeenCalledWith('work');
 
     fireEvent.click(screen.getAllByLabelText('Remove tag')[0]);
@@ -45,7 +45,7 @@ describe('TagFilter', () => {
     fireEvent.click(screen.getByLabelText('Add tag to favorites'));
     expect(toggleFavorite).toHaveBeenCalledWith('work');
 
-    fireEvent.click(screen.getByRole('button', { name: /Show all/i }));
+    fireEvent.click(screen.getByRole('tab', { name: /Show all/i }));
     expect(showAll).toHaveBeenCalled();
   });
 });
