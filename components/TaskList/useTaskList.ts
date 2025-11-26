@@ -16,7 +16,7 @@ export interface UseTaskListProps {
   tasks: Task[];
 }
 
-export default function useTaskList({ tasks }: UseTaskListProps) {
+export default function useTaskList({ tasks: _tasks }: UseTaskListProps) {
   const sensors = useSensors(
     useSensor(MouseSensor, { activationConstraint: { distance: 5 } }),
     useSensor(TouchSensor, {
@@ -26,17 +26,31 @@ export default function useTaskList({ tasks }: UseTaskListProps) {
       coordinateGetter: sortableKeyboardCoordinates,
     })
   );
-  const { reorderMyTasks } = useStore();
+  const { reorderMyTasks, order } = useStore(state => ({
+    reorderMyTasks: state.reorderMyTasks,
+    order: state.order,
+  }));
 
   const handleDragEnd = useCallback(
     (event: DragEndEvent) => {
       const { active, over } = event;
       if (!over) return;
       if (active.id === over.id) return;
-      const overIndex = tasks.findIndex(t => t.id === over.id);
-      reorderMyTasks(active.id as string, overIndex);
+      const priorityOrder = [
+        ...(order['priority-high'] || []),
+        ...(order['priority-medium'] || []),
+        ...(order['priority-low'] || []),
+      ];
+
+      const activeId = active.id as string;
+      const overId = over.id as string;
+      const newIndex = priorityOrder.indexOf(overId);
+
+      if (newIndex === -1) return;
+
+      reorderMyTasks(activeId, newIndex);
     },
-    [tasks, reorderMyTasks]
+    [order, reorderMyTasks]
   );
 
   return { state: { sensors }, actions: { handleDragEnd } } as const;
