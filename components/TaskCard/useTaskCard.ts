@@ -37,12 +37,14 @@ export default function useTaskCard({
   const {
     moveTask,
     removeTask,
+    toggleMyDay,
     tags: allTags,
     mainMyDayTaskId,
     setMainMyDayTask,
   } = useStore(state => ({
     moveTask: state.moveTask,
     removeTask: state.removeTask,
+    toggleMyDay: state.toggleMyDay,
     tags: state.tags,
     mainMyDayTaskId: state.mainMyDayTaskId,
     setMainMyDayTask: state.setMainMyDayTask,
@@ -66,6 +68,14 @@ export default function useTaskCard({
   };
 
   const deleteTask = () => {
+    const isRecurringWeeklyTask =
+      task.repeat?.frequency === 'weekly' && task.repeat.days.length > 0;
+
+    if (isRecurringWeeklyTask && task.plannedFor) {
+      toggleMyDay(task.id);
+      return;
+    }
+
     removeTask(task.id);
   };
 
