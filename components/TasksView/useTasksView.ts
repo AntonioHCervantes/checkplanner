@@ -126,6 +126,9 @@ export default function useTasksView() {
         priority: Priority;
       }) => {
         const id = store.addTask(input);
+        const lastTag = input.tags[input.tags.length - 1];
+        hasInteractedRef.current = true;
+        setActiveTab(lastTag ?? ALL_TAB);
         setHighlightedId(id);
         setTimeout(() => setHighlightedId(null), 3000);
         return id;
