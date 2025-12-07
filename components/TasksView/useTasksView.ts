@@ -130,7 +130,7 @@ export default function useTasksView() {
         hasInteractedRef.current = true;
         setActiveTab(lastTag ?? ALL_TAB);
         setHighlightedId(id);
-        setTimeout(() => setHighlightedId(null), 3000);
+        setTimeout(() => setHighlightedId(null), 1000);
         return id;
       },
       addTag: store.addTag,
