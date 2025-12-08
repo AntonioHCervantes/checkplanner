@@ -1,7 +1,8 @@
 'use client';
-import { useEffect, useState } from 'react';
+import { useMemo } from 'react';
 import { useStore } from '../../lib/store';
 import { useI18n } from '../../lib/i18n';
+import { useThemePreference } from '../../lib/useThemePreference';
 
 export default function useHeader() {
   const { tasks, exportData, importData, clearAll, notifications } = useStore(
@@ -14,68 +15,38 @@ export default function useHeader() {
     })
   );
   const { t, language, setLanguage } = useI18n();
-  const [showConfirm, setShowConfirm] = useState(false);
-  const [showLang, setShowLang] = useState(false);
-  const [theme, setTheme] = useState<'light' | 'dark'>('dark');
+  const { theme, toggleTheme } = useThemePreference();
   const myDayCount = tasks.filter(t => t.plannedFor !== null).length;
   const unreadNotifications = notifications.filter(n => !n.read).length;
 
-  useEffect(() => {
-    const stored = localStorage.getItem('theme');
-    if (stored === 'light' || stored === 'dark') {
-      setTheme(stored);
-      document.documentElement.classList.toggle('dark', stored === 'dark');
-    } else {
-      document.documentElement.classList.add('dark');
+  const latestUnreadNotification = useMemo(() => {
+    const unread = notifications.filter(n => !n.read);
+    if (unread.length === 0) {
+      return null;
     }
-  }, []);
 
-  const toggleTheme = () => {
-    const next = theme === 'dark' ? 'light' : 'dark';
-    setTheme(next);
-    document.documentElement.classList.toggle('dark', next === 'dark');
-    localStorage.setItem('theme', next);
-  };
-
-  const handleDelete = () => {
-    clearAll();
-    setShowConfirm(false);
-  };
-
-  const handleImport = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-    const reader = new FileReader();
-    reader.onload = () => {
-      try {
-        const data = JSON.parse(reader.result as string);
-        importData(data);
-      } catch (err) {
-        console.error(err);
-      }
-    };
-    reader.readAsText(file);
-  };
+    return unread.sort(
+      (a, b) =>
+        new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+    )[0];
+  }, [notifications]);
 
   return {
     state: {
-      showConfirm,
-      showLang,
       theme,
       t,
       language,
       myDayCount,
       unreadNotifications,
       notifications,
+      latestUnreadNotification,
     },
     actions: {
       exportData,
-      setShowConfirm,
-      handleDelete,
       toggleTheme,
-      setShowLang,
       setLanguage,
-      handleImport,
+      importData,
+      clearAll,
     },
   } as const;
 }
