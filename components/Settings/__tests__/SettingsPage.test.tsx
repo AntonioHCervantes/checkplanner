@@ -50,6 +50,16 @@ describe('SettingsPage', () => {
     });
   });
 
+  it('defaults to dark theme for first-time visitors', async () => {
+    render(<SettingsPage />);
+
+    expect(
+      await screen.findByTestId('settings-section-general')
+    ).toBeInTheDocument();
+    expect(localStorage.getItem('theme')).toBe('dark');
+    expect(document.documentElement).toHaveClass('dark');
+  });
+
   it('shows the general section by default and navigates through sections', async () => {
     const user = userEvent.setup();
     render(<SettingsPage />);

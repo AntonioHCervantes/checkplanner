@@ -11,16 +11,6 @@ function applyTheme(next: ThemePreference) {
   localStorage.setItem(THEME_STORAGE_KEY, next);
 }
 
-const getSystemTheme = (): ThemePreference => {
-  if (typeof window === 'undefined' || !window.matchMedia) {
-    return 'dark';
-  }
-
-  return window.matchMedia('(prefers-color-scheme: dark)').matches
-    ? 'dark'
-    : 'light';
-};
-
 const getInitialTheme = (): ThemePreference => {
   if (typeof window === 'undefined') {
     return 'dark';
@@ -31,7 +21,7 @@ const getInitialTheme = (): ThemePreference => {
     return stored;
   }
 
-  return getSystemTheme();
+  return 'dark';
 };
 
 export function useThemePreference() {
