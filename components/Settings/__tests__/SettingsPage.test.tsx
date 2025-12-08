@@ -91,10 +91,14 @@ describe('SettingsPage', () => {
       notifications: [],
     }));
 
-    const mockReadAsText = jest.fn(function (this: FileReader) {
+    type MutableFileReader = Omit<FileReader, 'result'> & {
+      result: string | ArrayBuffer | null;
+    };
+
+    const mockReadAsText = jest.fn(function (this: MutableFileReader) {
       this.result = JSON.stringify({ tasks: [] });
       if (typeof this.onload === 'function') {
-        this.onload(new ProgressEvent('load'));
+        this.onload(new ProgressEvent('load') as ProgressEvent<FileReader>);
       }
     });
 
