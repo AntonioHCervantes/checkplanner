@@ -168,6 +168,64 @@ const translations: Record<Language, any> = {
         untitledTask: 'Untitled task',
       },
     },
+    settingsPage: {
+      title: 'Settings',
+      subtitle: 'Personalize CheckPlanner',
+      description:
+        'Manage language, theme, work preferences, and alerts from a single workspace.',
+      badges: { current: 'Active' },
+      sections: {
+        general: { title: 'General', description: 'Language and data' },
+        appearance: { title: 'Appearance', description: 'Theme and layout' },
+        workSchedule: {
+          title: 'Work schedule',
+          description: 'Availability and reminders',
+        },
+        notifications: {
+          title: 'Notifications',
+          description: 'Alerts and preferences',
+        },
+      },
+      general: {
+        language: {
+          title: 'Language',
+          description: 'Choose the language you want to use in the app.',
+        },
+        data: {
+          title: 'Data & backups',
+          description: 'Import, export, or reset your planner safely.',
+          importHelper: 'Restore a previous backup (.json).',
+          exportHelper: 'Download a copy of your current data.',
+          clearHelper:
+            'This will delete all tasks, tags, timers, and preferences.',
+        },
+      },
+      appearance: {
+        theme: {
+          title: 'Theme',
+          description: 'Pick the mode that matches your workspace.',
+          light: 'Light mode',
+          lightDescription: 'Bright, clean interface for daytime focus.',
+          dark: 'Dark mode',
+          darkDescription: 'Dimmed interface to reduce eye strain.',
+          active: 'Active',
+        },
+      },
+      workSchedule: {
+        title: 'Work schedule',
+        description: 'Set your working hours and reminders.',
+        helper:
+          'Keep your daily availability up to date to improve reminders and recurring tasks.',
+        cta: 'Manage work schedule',
+      },
+      notifications: {
+        title: 'Notifications',
+        description: 'Control how you stay informed.',
+        helper:
+          'Review unread alerts or fine-tune preferences in the notifications page.',
+        cta: 'Open notifications',
+      },
+    },
     workSchedulePage: {
       title: 'Work schedule',
       intro:
@@ -546,6 +604,65 @@ const translations: Record<Language, any> = {
         title: 'Tiempo planificado finalizado',
         description: 'Un tiempo planificado ha finalizado.',
         untitledTask: 'Tarea sin título',
+      },
+    },
+    settingsPage: {
+      title: 'Ajustes',
+      subtitle: 'Personaliza CheckPlanner',
+      description:
+        'Administra idioma, apariencia, jornada laboral y avisos desde un solo lugar.',
+      badges: { current: 'Activo' },
+      sections: {
+        general: { title: 'Ajustes', description: 'Idioma y datos' },
+        appearance: { title: 'Apariencia', description: 'Tema y presentación' },
+        workSchedule: {
+          title: 'Jornada laboral',
+          description: 'Disponibilidad y recordatorios',
+        },
+        notifications: {
+          title: 'Notificaciones',
+          description: 'Avisos y preferencias',
+        },
+      },
+      general: {
+        language: {
+          title: 'Idioma',
+          description: 'Elige el idioma de la interfaz.',
+        },
+        data: {
+          title: 'Datos y copias de seguridad',
+          description: 'Importa, exporta o reinicia tu planificador.',
+          importHelper: 'Restaura una copia de seguridad (.json).',
+          exportHelper: 'Descarga una copia de tus datos actuales.',
+          clearHelper:
+            'Esto eliminará todas las tareas, etiquetas y preferencias.',
+        },
+      },
+      appearance: {
+        theme: {
+          title: 'Tema',
+          description: 'Ajusta el modo de la aplicación.',
+          light: 'Modo claro',
+          lightDescription: 'Interfaz luminosa y limpia para el día a día.',
+          dark: 'Modo oscuro',
+          darkDescription:
+            'Interfaz atenuada para reducir el cansancio visual.',
+          active: 'Activo',
+        },
+      },
+      workSchedule: {
+        title: 'Jornada laboral',
+        description: 'Configura tus horarios y recordatorios.',
+        helper:
+          'Mantén tus horas de trabajo al día para mejorar los avisos y las repeticiones.',
+        cta: 'Ir a jornada laboral',
+      },
+      notifications: {
+        title: 'Notificaciones',
+        description: 'Controla cómo recibes avisos.',
+        helper:
+          'Consulta las alertas pendientes o ajusta las preferencias en la página de notificaciones.',
+        cta: 'Ir a notificaciones',
       },
     },
     workSchedulePage: {
@@ -935,6 +1052,69 @@ const translations: Record<Language, any> = {
         untitledTask: 'Tâche sans titre',
       },
     },
+    settingsPage: {
+      title: 'Paramètres',
+      subtitle: 'Personnalisez CheckPlanner',
+      description:
+        'Gérez la langue, le thème, les horaires et les alertes au même endroit.',
+      badges: { current: 'Actif' },
+      sections: {
+        general: { title: 'Paramètres', description: 'Langue et données' },
+        appearance: {
+          title: 'Apparence',
+          description: 'Thème et présentation',
+        },
+        workSchedule: {
+          title: 'Horaire de travail',
+          description: 'Disponibilité et rappels',
+        },
+        notifications: {
+          title: 'Notifications',
+          description: 'Alertes et préférences',
+        },
+      },
+      general: {
+        language: {
+          title: 'Langue',
+          description: "Choisissez la langue de l'interface.",
+        },
+        data: {
+          title: 'Données et sauvegardes',
+          description:
+            'Importez, exportez ou réinitialisez votre planificateur.',
+          importHelper: 'Restaurez une sauvegarde (.json).',
+          exportHelper: 'Téléchargez une copie de vos données actuelles.',
+          clearHelper:
+            'Cela supprimera toutes les tâches, étiquettes et préférences.',
+        },
+      },
+      appearance: {
+        theme: {
+          title: 'Thème',
+          description: 'Choisissez le mode adapté à votre espace de travail.',
+          light: 'Mode clair',
+          lightDescription: 'Interface lumineuse et épurée pour la journée.',
+          dark: 'Mode sombre',
+          darkDescription:
+            'Interface assombrie pour réduire la fatigue visuelle.',
+          active: 'Actif',
+        },
+      },
+      workSchedule: {
+        title: 'Horaire de travail',
+        description: 'Définissez vos horaires et vos rappels.',
+        helper:
+          'Maintenez vos heures de travail à jour pour améliorer les rappels et les répétitions.',
+        cta: 'Gérer l’horaire de travail',
+      },
+      notifications: {
+        title: 'Notifications',
+        description: 'Contrôlez la façon dont vous êtes informé.',
+        helper:
+          'Consultez les alertes en attente ou ajustez les préférences depuis la page des notifications.',
+        cta: 'Ouvrir les notifications',
+      },
+    },
     workSchedulePage: {
       title: 'Horaire de travail',
       intro:
@@ -1321,6 +1501,66 @@ const translations: Record<Language, any> = {
         untitledTask: 'Attività senza titolo',
       },
     },
+    settingsPage: {
+      title: 'Impostazioni',
+      subtitle: 'Personalizza CheckPlanner',
+      description:
+        'Gestisci lingua, aspetto, orari di lavoro e avvisi da un unico spazio.',
+      badges: { current: 'Attivo' },
+      sections: {
+        general: { title: 'Impostazioni', description: 'Lingua e dati' },
+        appearance: { title: 'Aspetto', description: 'Tema e presentazione' },
+        workSchedule: {
+          title: 'Orario di lavoro',
+          description: 'Disponibilità e promemoria',
+        },
+        notifications: {
+          title: 'Notifiche',
+          description: 'Avvisi e preferenze',
+        },
+      },
+      general: {
+        language: {
+          title: 'Lingua',
+          description: "Scegli la lingua dell'interfaccia.",
+        },
+        data: {
+          title: 'Dati e backup',
+          description: 'Importa, esporta o reimposta il planner.',
+          importHelper: 'Ripristina un backup precedente (.json).',
+          exportHelper: 'Scarica una copia dei tuoi dati attuali.',
+          clearHelper:
+            'Questo eliminerà tutte le attività, le etichette e le preferenze.',
+        },
+      },
+      appearance: {
+        theme: {
+          title: 'Tema',
+          description: 'Scegli la modalità adatta al tuo ambiente di lavoro.',
+          light: 'Modalità chiara',
+          lightDescription:
+            'Interfaccia luminosa e pulita per il lavoro diurno.',
+          dark: 'Modalità scura',
+          darkDescription:
+            'Interfaccia attenuata per ridurre l’affaticamento visivo.',
+          active: 'Attivo',
+        },
+      },
+      workSchedule: {
+        title: 'Orario di lavoro',
+        description: 'Imposta gli orari e i promemoria.',
+        helper:
+          'Mantieni aggiornate le tue ore di lavoro per migliorare promemoria e ricorrenze.',
+        cta: 'Gestisci orario di lavoro',
+      },
+      notifications: {
+        title: 'Notifiche',
+        description: 'Controlla come ricevi gli avvisi.',
+        helper:
+          'Rivedi gli avvisi non letti o regola le preferenze dalla pagina notifiche.',
+        cta: 'Apri notifiche',
+      },
+    },
     workSchedulePage: {
       title: 'Orario di lavoro',
       intro:
@@ -1702,6 +1942,65 @@ const translations: Record<Language, any> = {
         title: 'Geplante Zeit beendet',
         description: 'Eine geplante Zeit ist abgelaufen.',
         untitledTask: 'Aufgabe ohne Titel',
+      },
+    },
+    settingsPage: {
+      title: 'Einstellungen',
+      subtitle: 'Passe CheckPlanner an',
+      description:
+        'Steuere Sprache, Erscheinungsbild, Arbeitszeiten und Hinweise an einem Ort.',
+      badges: { current: 'Aktiv' },
+      sections: {
+        general: { title: 'Einstellungen', description: 'Sprache und Daten' },
+        appearance: { title: 'Darstellung', description: 'Theme und Layout' },
+        workSchedule: {
+          title: 'Arbeitszeit',
+          description: 'Verfügbarkeit und Erinnerungen',
+        },
+        notifications: {
+          title: 'Benachrichtigungen',
+          description: 'Hinweise und Präferenzen',
+        },
+      },
+      general: {
+        language: {
+          title: 'Sprache',
+          description: 'Wähle die Sprache der Oberfläche.',
+        },
+        data: {
+          title: 'Daten und Backups',
+          description:
+            'Importiere, exportiere oder setze deinen Planer zurück.',
+          importHelper: 'Stelle ein früheres Backup (.json) wieder her.',
+          exportHelper: 'Lade eine Kopie deiner aktuellen Daten herunter.',
+          clearHelper:
+            'Dadurch werden alle Aufgaben, Etiketten und Einstellungen entfernt.',
+        },
+      },
+      appearance: {
+        theme: {
+          title: 'Theme',
+          description: 'Wähle den Modus, der zu deinem Arbeitsplatz passt.',
+          light: 'Helles Theme',
+          lightDescription: 'Helle, klare Oberfläche für den Tag.',
+          dark: 'Dunkles Theme',
+          darkDescription: 'Abgedunkelte Oberfläche zur Schonung der Augen.',
+          active: 'Aktiv',
+        },
+      },
+      workSchedule: {
+        title: 'Arbeitszeit',
+        description: 'Lege Arbeitszeiten und Erinnerungen fest.',
+        helper:
+          'Halte deine Verfügbarkeit aktuell, um Erinnerungen und Wiederholungen zu verbessern.',
+        cta: 'Arbeitszeit öffnen',
+      },
+      notifications: {
+        title: 'Benachrichtigungen',
+        description: 'Bestimme, wie du informiert wirst.',
+        helper:
+          'Prüfe ungelesene Hinweise oder passe Präferenzen auf der Benachrichtigungsseite an.',
+        cta: 'Benachrichtigungen öffnen',
       },
     },
     workSchedulePage: {

@@ -3,77 +3,39 @@ import Link from 'next/link';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { usePathname } from 'next/navigation';
 import {
-  Download,
-  Upload,
-  Trash2,
   Sun,
   Moon,
   Settings,
   Bell,
-  CalendarClock,
   AlertTriangle,
   Info,
   Lightbulb,
-  Languages,
 } from 'lucide-react';
-import { Language, LANGUAGES } from '../../lib/i18n';
 import { getNotificationIconClasses } from '../../lib/notifications';
 import Icon from '../Icon/Icon';
 import useHeader from './useHeader';
-import useDialogFocusTrap from '../../lib/useDialogFocusTrap';
 
 export default function Header() {
   const { state, actions } = useHeader();
   const {
-    showConfirm,
-    showLang,
     theme,
     t,
-    language,
     myDayCount,
     unreadNotifications,
-    notifications,
+    latestUnreadNotification,
   } = state;
-  const {
-    exportData,
-    setShowConfirm,
-    handleDelete,
-    toggleTheme,
-    setShowLang,
-    setLanguage,
-    handleImport,
-  } = actions;
-  const [showActions, setShowActions] = useState(false);
+  const { toggleTheme } = actions;
   const [showNotificationPopover, setShowNotificationPopover] = useState(false);
   const [lastNotificationId, setLastNotificationId] = useState<string | null>(
     null
   );
   const headerRef = useRef<HTMLElement | null>(null);
   const bellRef = useRef<HTMLAnchorElement | null>(null);
-  const langMenuRef = useRef<HTMLDivElement | null>(null);
-  const confirmDialogRef = useRef<HTMLDivElement | null>(null);
-  const confirmCancelButtonRef = useRef<HTMLButtonElement | null>(null);
-  const {
-    onFocusStartGuard: onConfirmFocusStartGuard,
-    onFocusEndGuard: onConfirmFocusEndGuard,
-  } = useDialogFocusTrap(showConfirm, confirmDialogRef, {
-    initialFocusRef: confirmCancelButtonRef,
-  });
   const [popoverPosition, setPopoverPosition] = useState<{
     top: number;
     right: number;
   } | null>(null);
   const pathname = usePathname();
-  const latestUnreadNotification = useMemo(() => {
-    const unread = notifications.filter(n => !n.read);
-    if (unread.length === 0) {
-      return null;
-    }
-    return unread.sort(
-      (a, b) =>
-        new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-    )[0];
-  }, [notifications]);
   const popoverTitle = useMemo(() => {
     if (!latestUnreadNotification) {
       return '';
@@ -144,28 +106,6 @@ export default function Header() {
     };
   }, [showNotificationPopover, lastNotificationId, updatePopoverPosition]);
 
-  useEffect(() => {
-    if (!showLang) {
-      return;
-    }
-
-    const handlePointerDown = (event: PointerEvent) => {
-      if (
-        langMenuRef.current &&
-        event.target instanceof Node &&
-        !langMenuRef.current.contains(event.target)
-      ) {
-        setShowLang(false);
-      }
-    };
-
-    document.addEventListener('pointerdown', handlePointerDown);
-
-    return () => {
-      document.removeEventListener('pointerdown', handlePointerDown);
-    };
-  }, [showLang, setShowLang]);
-
   return (
     <>
       <header
@@ -233,44 +173,6 @@ export default function Header() {
                 />
               )}
             </button>
-            <div
-              className="relative"
-              ref={langMenuRef}
-            >
-              <button
-                onClick={() => setShowLang(v => !v)}
-                aria-label={t('actions.language')}
-                title={t('actions.language')}
-                className="rounded p-2 hover:bg-gray-200 focus:bg-gray-200 dark:hover:bg-gray-800 dark:focus:bg-gray-800"
-                data-testid="language-menu-toggle"
-              >
-                {language.toUpperCase()}
-              </button>
-              {showLang && (
-                <div
-                  className="absolute right-0 mt-2 w-48 rounded bg-gray-100 shadow dark:bg-gray-800 z-50"
-                  data-testid="language-menu"
-                >
-                  {LANGUAGES.map(code => (
-                    <button
-                      key={code}
-                      onClick={() => {
-                        setLanguage(code);
-                        setShowLang(false);
-                      }}
-                      className={`block w-full px-4 py-2 text-left hover:bg-gray-200 dark:hover:bg-gray-700 ${
-                        code === language
-                          ? 'bg-gray-200 dark:bg-gray-700 font-semibold'
-                          : ''
-                      }`}
-                      data-testid={`language-option-${code}`}
-                    >
-                      {code.toUpperCase()} - {t(`lang.${code}`)}
-                    </button>
-                  ))}
-                </div>
-              )}
-            </div>
           </div>
           <Link
             href="/notifications"
@@ -319,8 +221,8 @@ export default function Header() {
                 </div>
               </Link>
             )}
-          <button
-            onClick={() => setShowActions(true)}
+          <Link
+            href="/settings"
             aria-label={t('actions.settings')}
             title={t('actions.settings')}
             className="rounded p-2 hover:bg-gray-200 focus:bg-gray-200 dark:hover:bg-gray-800 dark:focus:bg-gray-800"
@@ -330,201 +232,9 @@ export default function Header() {
               className="h-4 w-4"
               data-testid="header-settings-icon"
             />
-          </button>
+          </Link>
         </div>
       </header>
-      {showActions && (
-        <div
-          className="fixed inset-0 z-50 flex justify-end bg-black/50"
-          onClick={() => setShowActions(false)}
-          data-testid="header-actions-overlay"
-        >
-          <div
-            className="h-full w-64 bg-gray-100 p-4 dark:bg-gray-900"
-            onClick={e => e.stopPropagation()}
-            data-testid="header-actions-panel"
-          >
-            <div className="flex flex-col gap-2">
-              <Link
-                href="/settings/work-schedule"
-                onClick={() => setShowActions(false)}
-                className="flex items-center gap-2 rounded px-2 py-2 hover:bg-gray-200 dark:hover:bg-gray-800"
-                data-testid="header-actions-work-schedule"
-              >
-                <CalendarClock
-                  className="h-4 w-4"
-                  data-testid="header-actions-work-schedule-icon"
-                />
-                {t('actions.workSchedule')}
-              </Link>
-              <button
-                onClick={() => {
-                  toggleTheme();
-                  setShowActions(false);
-                }}
-                className="flex items-center gap-2 rounded px-2 py-2 hover:bg-gray-200 dark:hover:bg-gray-800"
-                data-testid="header-actions-theme-toggle"
-              >
-                {theme === 'dark' ? (
-                  <Sun
-                    className="h-4 w-4"
-                    data-testid="header-actions-theme-icon-sun"
-                  />
-                ) : (
-                  <Moon
-                    className="h-4 w-4"
-                    data-testid="header-actions-theme-icon-moon"
-                  />
-                )}
-                {t('actions.toggleTheme')}
-              </button>
-              <Link
-                href="/notifications"
-                onClick={() => setShowActions(false)}
-                className="flex items-center gap-2 rounded px-2 py-2 hover:bg-gray-200 dark:hover:bg-gray-800"
-                data-testid="header-actions-notifications"
-              >
-                <Bell
-                  className="h-4 w-4"
-                  data-testid="header-actions-notifications-icon"
-                />
-                {t('actions.notifications')}
-              </Link>
-              <button
-                onClick={() => {
-                  exportData();
-                  setShowActions(false);
-                }}
-                className="flex items-center gap-2 rounded px-2 py-2 hover:bg-gray-200 dark:hover:bg-gray-800"
-                data-testid="header-actions-export"
-              >
-                <Download
-                  className="h-4 w-4"
-                  data-testid="header-actions-export-icon"
-                />{' '}
-                {t('actions.export')}
-              </button>
-              <label className="flex cursor-pointer items-center gap-2 rounded px-2 py-2 hover:bg-gray-200 focus-within:bg-gray-200 dark:hover:bg-gray-800 dark:focus-within:bg-gray-800">
-                <Upload
-                  className="h-4 w-4"
-                  data-testid="header-actions-import-icon"
-                />{' '}
-                {t('actions.import')}
-                <input
-                  type="file"
-                  accept="application/json"
-                  onChange={e => {
-                    handleImport(e);
-                    setShowActions(false);
-                  }}
-                  className="sr-only"
-                  data-testid="header-actions-import-input"
-                />
-              </label>
-              <button
-                onClick={() => {
-                  setShowConfirm(true);
-                  setShowActions(false);
-                }}
-                className="flex items-center gap-2 rounded px-2 py-2 hover:bg-gray-200 dark:hover:bg-gray-800"
-                data-testid="header-actions-clear"
-              >
-                <Trash2
-                  className="h-4 w-4"
-                  data-testid="header-actions-clear-icon"
-                />{' '}
-                {t('actions.clearAll')}
-              </button>
-              <div className="rounded px-2 py-2 hover:bg-gray-200 focus-within:bg-gray-200 dark:hover:bg-gray-800 dark:focus-within:bg-gray-800">
-                <div className="flex items-center gap-2">
-                  <Languages
-                    className="h-4 w-4"
-                    data-testid="header-actions-language-icon"
-                  />
-                  <label
-                    htmlFor="language-select"
-                    className="flex-1 text-left text-sm font-medium text-gray-900 dark:text-gray-100"
-                  >
-                    {t('actions.language')}
-                  </label>
-                </div>
-                <select
-                  id="language-select"
-                  value={language}
-                  onChange={e => {
-                    setLanguage(e.target.value as Language);
-                    setShowActions(false);
-                  }}
-                  className="mt-2 w-full rounded border border-gray-300 bg-white px-2 py-1 text-sm font-semibold text-gray-900 focus:border-gray-400 focus:outline-none dark:border-gray-700 dark:bg-gray-950 dark:text-gray-100 dark:focus:border-gray-500"
-                  data-testid="header-actions-language-select"
-                >
-                  {LANGUAGES.map(code => (
-                    <option
-                      key={code}
-                      value={code}
-                    >
-                      {code.toUpperCase()} - {t(`lang.${code}`)}
-                    </option>
-                  ))}
-                </select>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-      {showConfirm && (
-        <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/50"
-          data-testid="header-confirm-overlay"
-        >
-          <div
-            ref={confirmDialogRef}
-            role="dialog"
-            aria-modal="true"
-            aria-labelledby="confirm-delete-title"
-            className="w-full max-w-sm rounded bg-gray-900 p-6 text-center text-gray-100"
-            data-testid="header-confirm-dialog"
-          >
-            <span
-              tabIndex={0}
-              aria-hidden="true"
-              data-focus-guard
-              onFocus={onConfirmFocusStartGuard}
-              className="sr-only"
-            />
-            <h2
-              id="confirm-delete-title"
-              className="mb-4 text-lg font-semibold"
-            >
-              {t('confirmDelete.message')}
-            </h2>
-            <div className="flex justify-center gap-2">
-              <button
-                ref={confirmCancelButtonRef}
-                onClick={() => setShowConfirm(false)}
-                className="rounded bg-gray-700 px-3 py-1 hover:bg-gray-600 focus:bg-gray-600"
-                data-testid="header-confirm-cancel"
-              >
-                {t('confirmDelete.cancel')}
-              </button>
-              <button
-                onClick={handleDelete}
-                className="rounded bg-[rgb(184,75,79)] px-3 py-1 text-white hover:brightness-110 focus:brightness-110"
-                data-testid="header-confirm-delete"
-              >
-                {t('confirmDelete.delete')}
-              </button>
-            </div>
-            <span
-              tabIndex={0}
-              aria-hidden="true"
-              data-focus-guard
-              onFocus={onConfirmFocusEndGuard}
-              className="sr-only"
-            />
-          </div>
-        </div>
-      )}
     </>
   );
 }
