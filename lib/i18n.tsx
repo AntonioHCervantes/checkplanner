@@ -224,6 +224,29 @@ const translations: Record<Language, any> = {
         helper:
           'Review unread alerts or fine-tune preferences in the notifications page.',
         cta: 'Open notifications',
+        soundPreferences: {
+          title: 'Notification sounds',
+          description:
+            'Choose whether to play sounds and pick a tone for each type of alert.',
+          toggleLabel: 'Toggle sound',
+          selectLabel: 'Sound',
+          timerFinished: {
+            title: 'Planned time finished',
+            description: 'Alert when a task planning timer ends.',
+          },
+          workdayReminder: {
+            title: 'End of workday reminder',
+            description:
+              'Reminder to wrap up the day and plan the next tasks before finishing.',
+          },
+        },
+        soundOptions: {
+          chime: 'Gentle chime',
+          bell: 'Classic bell',
+          digital: 'Digital ping',
+          pulse: 'Soft pulse',
+          spark: 'Sparkle tone',
+        },
       },
     },
     workSchedulePage: {
@@ -663,6 +686,30 @@ const translations: Record<Language, any> = {
         helper:
           'Consulta las alertas pendientes o ajusta las preferencias en la página de notificaciones.',
         cta: 'Ir a notificaciones',
+        soundPreferences: {
+          title: 'Sonidos de notificaciones',
+          description:
+            'Activa o desactiva el sonido y elige un tono distinto para cada aviso.',
+          toggleLabel: 'Activar sonido',
+          selectLabel: 'Sonido',
+          timerFinished: {
+            title: 'Fin del tiempo planificado',
+            description:
+              'Aviso cuando termina el temporizador de planificación de una tarea.',
+          },
+          workdayReminder: {
+            title: 'Aviso de fin de jornada',
+            description:
+              'Recordatorio para cerrar el día y preparar el siguiente antes de terminar.',
+          },
+        },
+        soundOptions: {
+          chime: 'Campana suave',
+          bell: 'Campana clásica',
+          digital: 'Tono digital',
+          pulse: 'Pulso',
+          spark: 'Destello',
+        },
       },
     },
     workSchedulePage: {
@@ -1113,6 +1160,30 @@ const translations: Record<Language, any> = {
         helper:
           'Consultez les alertes en attente ou ajustez les préférences depuis la page des notifications.',
         cta: 'Ouvrir les notifications',
+        soundPreferences: {
+          title: 'Sons des notifications',
+          description:
+            'Activez ou désactivez le son et choisissez une tonalité différente pour chaque alerte.',
+          toggleLabel: 'Activer le son',
+          selectLabel: 'Son',
+          timerFinished: {
+            title: 'Fin du temps planifié',
+            description:
+              'Alerte lorsque le minuteur de planification d’une tâche se termine.',
+          },
+          workdayReminder: {
+            title: 'Rappel de fin de journée',
+            description:
+              'Rappel pour conclure la journée et préparer la suivante avant de terminer.',
+          },
+        },
+        soundOptions: {
+          chime: 'Carillon doux',
+          bell: 'Cloche classique',
+          digital: 'Ping digital',
+          pulse: 'Pouls',
+          spark: 'Éclat',
+        },
       },
     },
     workSchedulePage: {
@@ -1559,6 +1630,30 @@ const translations: Record<Language, any> = {
         helper:
           'Rivedi gli avvisi non letti o regola le preferenze dalla pagina notifiche.',
         cta: 'Apri notifiche',
+        soundPreferences: {
+          title: 'Suoni delle notifiche',
+          description:
+            'Attiva o disattiva i suoni e scegli un tono diverso per ogni avviso.',
+          toggleLabel: 'Attiva suono',
+          selectLabel: 'Suono',
+          timerFinished: {
+            title: 'Fine del tempo pianificato',
+            description:
+              'Avviso quando termina il timer di pianificazione di un’attività.',
+          },
+          workdayReminder: {
+            title: 'Promemoria di fine giornata',
+            description:
+              'Promemoria per chiudere la giornata e preparare la successiva prima di finire.',
+          },
+        },
+        soundOptions: {
+          chime: 'Scampanellio',
+          bell: 'Campanella classica',
+          digital: 'Ping digitale',
+          pulse: 'Battito',
+          spark: 'Scintilla',
+        },
       },
     },
     workSchedulePage: {
@@ -2001,6 +2096,30 @@ const translations: Record<Language, any> = {
         helper:
           'Prüfe ungelesene Hinweise oder passe Präferenzen auf der Benachrichtigungsseite an.',
         cta: 'Benachrichtigungen öffnen',
+        soundPreferences: {
+          title: 'Benachrichtigungstöne',
+          description:
+            'Aktiviere oder deaktiviere Klänge und wähle für jeden Hinweis einen eigenen Ton.',
+          toggleLabel: 'Ton aktivieren',
+          selectLabel: 'Ton',
+          timerFinished: {
+            title: 'Geplante Zeit beendet',
+            description:
+              'Hinweis, wenn der Planungs-Timer einer Aufgabe endet.',
+          },
+          workdayReminder: {
+            title: 'Erinnerung zum Feierabend',
+            description:
+              'Erinnerung, den Tag abzuschließen und den nächsten vorzubereiten, bevor du aufhörst.',
+          },
+        },
+        soundOptions: {
+          chime: 'Sanftes Läuten',
+          bell: 'Klassische Glocke',
+          digital: 'Digitaler Ping',
+          pulse: 'Puls',
+          spark: 'Funkeln',
+        },
       },
     },
     workSchedulePage: {

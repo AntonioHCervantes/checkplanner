@@ -147,4 +147,33 @@ describe('SettingsPage', () => {
     expect(localStorage.getItem('theme')).toBe('dark');
     expect(document.documentElement).toHaveClass('dark');
   });
+
+  it('allows configuring notification sound preferences', async () => {
+    const user = userEvent.setup();
+
+    render(<SettingsPage />);
+
+    await user.click(screen.getByTestId('settings-nav-item-notifications'));
+
+    expect(
+      screen.getByTestId('settings-section-notifications')
+    ).toBeInTheDocument();
+
+    await user.click(
+      screen.getByTestId('settings-notifications-timer-finished-toggle')
+    );
+
+    expect(
+      useStore.getState().notificationPreferences.timerFinished.soundEnabled
+    ).toBe(false);
+
+    const workdaySelect = screen.getByTestId(
+      'settings-notifications-workday-reminder-select'
+    ) as HTMLSelectElement;
+    await user.selectOptions(workdaySelect, 'digital');
+
+    expect(
+      useStore.getState().notificationPreferences.workdayReminder.sound
+    ).toBe('digital');
+  });
 });

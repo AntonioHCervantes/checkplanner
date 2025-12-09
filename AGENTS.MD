@@ -18,6 +18,13 @@
 - Tests
 - Build
 
+### Persistence and schema changes
+
+- When adding or modifying fields in `PersistedState`, update **all** save/load
+  paths (including `saveState` calls) so the full shape is persisted and
+  migrations stay consistent. Run the full build to catch type errors before
+  opening a PR.
+
 If any of these fail, do not open or update a PR. Fix first.
 
 ## Code style guidelines

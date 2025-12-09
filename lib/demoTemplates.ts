@@ -1,4 +1,10 @@
-import { PersistedState, List, Tag, Task } from './types';
+import {
+  PersistedState,
+  List,
+  Tag,
+  Task,
+  NotificationPreferences,
+} from './types';
 
 type DemoTemplateRoleKey =
   | 'techLead'
@@ -29,6 +35,11 @@ const createEmptyWorkSchedule = () => ({
   saturday: [],
   sunday: [],
 });
+
+const defaultNotificationPreferences: NotificationPreferences = {
+  timerFinished: { soundEnabled: true, sound: 'chime' },
+  workdayReminder: { soundEnabled: true, sound: 'bell' },
+};
 
 const DEFAULT_ORDER_KEYS = [
   'priority-high',
@@ -84,7 +95,8 @@ const createTemplateState = (
         lastNotifiedDate: null,
       },
     },
-    version: 11,
+    notificationPreferences: defaultNotificationPreferences,
+    version: 12,
   };
 };
 

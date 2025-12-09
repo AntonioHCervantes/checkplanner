@@ -10,6 +10,9 @@ import {
   TaskTimer,
   WorkSchedule,
   WorkPreferences,
+  NotificationPreferences,
+  NotificationSound,
+  NOTIFICATION_SOUNDS,
   Weekday,
   WEEKDAYS,
 } from './types';
@@ -40,6 +43,11 @@ const defaultWorkPreferences: WorkPreferences = {
     minutesBefore: 15,
     lastNotifiedDate: null,
   },
+};
+
+const defaultNotificationPreferences: NotificationPreferences = {
+  timerFinished: { soundEnabled: true, sound: 'chime' },
+  workdayReminder: { soundEnabled: true, sound: 'bell' },
 };
 
 const sanitizeSlots = (slots: unknown): number[] => {
@@ -99,6 +107,41 @@ const sanitizeWorkPreferences = (input: unknown): WorkPreferences => {
       minutesBefore,
       lastNotifiedDate,
     },
+  };
+};
+
+const isNotificationSound = (sound: unknown): sound is NotificationSound =>
+  typeof sound === 'string' &&
+  NOTIFICATION_SOUNDS.includes(sound as NotificationSound);
+
+const sanitizeNotificationPreferences = (
+  input: unknown
+): NotificationPreferences => {
+  const defaults = defaultNotificationPreferences;
+  if (!input || typeof input !== 'object') {
+    return { ...defaults };
+  }
+
+  const preferences = input as Partial<NotificationPreferences>;
+  const sanitizePreference = (
+    pref:
+      | Partial<NotificationPreferences[keyof NotificationPreferences]>
+      | undefined,
+    fallback: NotificationPreferences[keyof NotificationPreferences]
+  ) => ({
+    soundEnabled: pref?.soundEnabled ?? fallback.soundEnabled,
+    sound: isNotificationSound(pref?.sound) ? pref.sound : fallback.sound,
+  });
+
+  return {
+    timerFinished: sanitizePreference(
+      preferences.timerFinished,
+      defaults.timerFinished
+    ),
+    workdayReminder: sanitizePreference(
+      preferences.workdayReminder,
+      defaults.workdayReminder
+    ),
   };
 };
 
@@ -208,7 +251,8 @@ const defaultState: PersistedState = {
   mainMyDayTaskId: null,
   workSchedule: createEmptyWorkSchedule(),
   workPreferences: defaultWorkPreferences,
-  version: 11,
+  notificationPreferences: defaultNotificationPreferences,
+  version: 12,
 };
 
 type Store = PersistedState & {
@@ -259,6 +303,14 @@ type Store = PersistedState & {
   setPlanningReminderEnabled: (enabled: boolean) => void;
   setPlanningReminderMinutes: (minutes: number) => void;
   setPlanningReminderLastNotified: (date: string | null) => void;
+  setNotificationSoundEnabled: (
+    notification: keyof NotificationPreferences,
+    enabled: boolean
+  ) => void;
+  setNotificationSound: (
+    notification: keyof NotificationPreferences,
+    sound: NotificationSound
+  ) => void;
   applyRecurringTasksForToday: () => void;
 };
 
@@ -331,6 +383,9 @@ if (persisted) {
   persisted.workPreferences = sanitizeWorkPreferences(
     persisted.workPreferences
   );
+  persisted.notificationPreferences = sanitizeNotificationPreferences(
+    (persisted as any).notificationPreferences
+  );
   if (persisted.version < 8) {
     persisted.version = 8;
   }
@@ -345,6 +400,20 @@ if (persisted) {
   }
   if (persisted.version < 11) {
     persisted.version = 11;
+  }
+  if (persisted.version < 12) {
+    persisted.notificationPreferences = {
+      ...persisted.notificationPreferences,
+      timerFinished: {
+        ...defaultNotificationPreferences.timerFinished,
+        ...persisted.notificationPreferences.timerFinished,
+      },
+      workdayReminder: {
+        ...defaultNotificationPreferences.workdayReminder,
+        ...persisted.notificationPreferences.workdayReminder,
+      },
+    };
+    persisted.version = 12;
   }
   persisted.tasks = persisted.tasks.map(task => {
     const sanitizedRepeat = sanitizeTaskRepeat((task as any).repeat);
@@ -537,6 +606,7 @@ export const useStore = create<Store>((set, get) => ({
         mainMyDayTaskId,
         workSchedule: state.workSchedule,
         workPreferences: state.workPreferences,
+        notificationPreferences: state.notificationPreferences,
         version: state.version,
       };
       saveState(persisted);
@@ -884,6 +954,9 @@ export const useStore = create<Store>((set, get) => ({
       mainMyDayTaskId: data.mainMyDayTaskId ?? null,
       workSchedule: sanitizeWorkSchedule(data.workSchedule),
       workPreferences: sanitizeWorkPreferences(data.workPreferences),
+      notificationPreferences: sanitizeNotificationPreferences(
+        data.notificationPreferences
+      ),
       version: defaultState.version,
     };
     set(() => sanitized);
@@ -1007,6 +1080,51 @@ export const useStore = create<Store>((set, get) => ({
           planningReminder: {
             ...current,
             lastNotifiedDate: date,
+          },
+        },
+      };
+    });
+    saveState(get());
+  },
+  setNotificationSoundEnabled: (notification, enabled) => {
+    set(state => {
+      const currentPreferences = {
+        ...defaultNotificationPreferences,
+        ...(state.notificationPreferences ?? {}),
+      };
+      const current =
+        currentPreferences[notification] ??
+        defaultNotificationPreferences[notification];
+      return {
+        notificationPreferences: {
+          ...currentPreferences,
+          [notification]: {
+            ...current,
+            soundEnabled: enabled,
+          },
+        },
+      };
+    });
+    saveState(get());
+  },
+  setNotificationSound: (notification, sound) => {
+    if (!NOTIFICATION_SOUNDS.includes(sound)) {
+      return;
+    }
+    set(state => {
+      const currentPreferences = {
+        ...defaultNotificationPreferences,
+        ...(state.notificationPreferences ?? {}),
+      };
+      const current =
+        currentPreferences[notification] ??
+        defaultNotificationPreferences[notification];
+      return {
+        notificationPreferences: {
+          ...currentPreferences,
+          [notification]: {
+            ...current,
+            sound,
           },
         },
       };

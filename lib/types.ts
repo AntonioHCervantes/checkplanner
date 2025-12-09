@@ -56,6 +56,31 @@ export type TaskTimer = {
   endsAt: string | null;
 };
 
+export type NotificationSound =
+  | 'chime'
+  | 'bell'
+  | 'digital'
+  | 'pulse'
+  | 'spark';
+
+export const NOTIFICATION_SOUNDS: NotificationSound[] = [
+  'chime',
+  'bell',
+  'digital',
+  'pulse',
+  'spark',
+];
+
+export type NotificationSoundPreference = {
+  soundEnabled: boolean;
+  sound: NotificationSound;
+};
+
+export type NotificationPreferences = {
+  timerFinished: NotificationSoundPreference;
+  workdayReminder: NotificationSoundPreference;
+};
+
 export type WorkSchedule = Record<Weekday, number[]>;
 
 export type WorkPreferences = {
@@ -77,6 +102,7 @@ export type PersistedState = {
   mainMyDayTaskId: string | null;
   workSchedule: WorkSchedule;
   workPreferences: WorkPreferences;
+  notificationPreferences: NotificationPreferences;
   version: number;
 };
 
