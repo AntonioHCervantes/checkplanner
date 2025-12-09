@@ -606,6 +606,7 @@ export const useStore = create<Store>((set, get) => ({
         mainMyDayTaskId,
         workSchedule: state.workSchedule,
         workPreferences: state.workPreferences,
+        notificationPreferences: state.notificationPreferences,
         version: state.version,
       };
       saveState(persisted);
