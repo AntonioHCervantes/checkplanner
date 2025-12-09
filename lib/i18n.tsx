@@ -230,6 +230,7 @@ const translations: Record<Language, any> = {
             'Choose whether to play sounds and pick a tone for each type of alert.',
           toggleLabel: 'Toggle sound',
           selectLabel: 'Sound',
+          previewLabel: 'Play sound',
           timerFinished: {
             title: 'Planned time finished',
             description: 'Alert when a task planning timer ends.',
@@ -692,6 +693,7 @@ const translations: Record<Language, any> = {
             'Activa o desactiva el sonido y elige un tono distinto para cada aviso.',
           toggleLabel: 'Activar sonido',
           selectLabel: 'Sonido',
+          previewLabel: 'Reproducir sonido',
           timerFinished: {
             title: 'Fin del tiempo planificado',
             description:
@@ -1166,6 +1168,7 @@ const translations: Record<Language, any> = {
             'Activez ou désactivez le son et choisissez une tonalité différente pour chaque alerte.',
           toggleLabel: 'Activer le son',
           selectLabel: 'Son',
+          previewLabel: 'Lire le son',
           timerFinished: {
             title: 'Fin du temps planifié',
             description:
@@ -1636,6 +1639,7 @@ const translations: Record<Language, any> = {
             'Attiva o disattiva i suoni e scegli un tono diverso per ogni avviso.',
           toggleLabel: 'Attiva suono',
           selectLabel: 'Suono',
+          previewLabel: 'Riproduci suono',
           timerFinished: {
             title: 'Fine del tempo pianificato',
             description:
@@ -2102,6 +2106,7 @@ const translations: Record<Language, any> = {
             'Aktiviere oder deaktiviere Klänge und wähle für jeden Hinweis einen eigenen Ton.',
           toggleLabel: 'Ton aktivieren',
           selectLabel: 'Ton',
+          previewLabel: 'Sound abspielen',
           timerFinished: {
             title: 'Geplante Zeit beendet',
             description:

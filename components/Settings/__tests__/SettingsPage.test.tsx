@@ -2,6 +2,12 @@ import userEvent from '@testing-library/user-event';
 import SettingsPage from '../../../app/settings/page';
 import { act, render, screen } from '../../../test/test-utils';
 import { useStore } from '../../../lib/store';
+import { playNotificationSound } from '../../../lib/sounds';
+
+jest.mock('../../../lib/sounds', () => ({
+  ...jest.requireActual('../../../lib/sounds'),
+  playNotificationSound: jest.fn(),
+}));
 
 const initialState = useStore.getState();
 
@@ -43,6 +49,7 @@ describe('SettingsPage', () => {
     act(() => {
       useStore.setState(initialState, true);
     });
+    jest.clearAllMocks();
     window.matchMedia = originalMatchMedia;
     Object.defineProperty(window, 'FileReader', {
       writable: true,
@@ -175,5 +182,29 @@ describe('SettingsPage', () => {
     expect(
       useStore.getState().notificationPreferences.workdayReminder.sound
     ).toBe('digital');
+  });
+
+  it('lets users preview the selected notification sound', async () => {
+    const user = userEvent.setup();
+
+    render(<SettingsPage />);
+
+    await user.click(screen.getByTestId('settings-nav-item-notifications'));
+
+    const previewButton = screen.getByTestId(
+      'settings-notifications-timer-finished-preview'
+    );
+
+    expect(previewButton).toBeEnabled();
+
+    await user.click(previewButton);
+
+    expect(playNotificationSound).toHaveBeenCalledWith('chime');
+
+    await user.click(
+      screen.getByTestId('settings-notifications-timer-finished-toggle')
+    );
+
+    expect(previewButton).toBeDisabled();
   });
 });

@@ -1,3 +1,61 @@
+import type { NotificationSound } from './types';
+
+type NotificationTone = {
+  frequency: number;
+  duration: number;
+  volume?: number;
+  gap?: number;
+};
+
+type NotificationSoundPreset = {
+  type: OscillatorType;
+  tones: NotificationTone[];
+};
+
+const NOTIFICATION_SOUND_PRESETS: Record<
+  NotificationSound,
+  NotificationSoundPreset
+> = {
+  chime: {
+    type: 'sine',
+    tones: [
+      { frequency: 720, duration: 0.32, volume: 0.11 },
+      { frequency: 1020, duration: 0.36, volume: 0.1, gap: 0.08 },
+    ],
+  },
+  bell: {
+    type: 'triangle',
+    tones: [
+      { frequency: 540, duration: 0.42, volume: 0.13 },
+      { frequency: 760, duration: 0.38, volume: 0.11, gap: 0.08 },
+    ],
+  },
+  digital: {
+    type: 'square',
+    tones: [
+      { frequency: 1280, duration: 0.2, volume: 0.1 },
+      { frequency: 1520, duration: 0.18, volume: 0.1, gap: 0.06 },
+      { frequency: 1180, duration: 0.28, volume: 0.1, gap: 0.06 },
+    ],
+  },
+  pulse: {
+    type: 'sawtooth',
+    tones: [
+      { frequency: 420, duration: 0.22, volume: 0.08 },
+      { frequency: 520, duration: 0.22, volume: 0.08, gap: 0.04 },
+      { frequency: 620, duration: 0.22, volume: 0.08, gap: 0.04 },
+    ],
+  },
+  spark: {
+    type: 'sine',
+    tones: [
+      { frequency: 1040, duration: 0.16, volume: 0.09 },
+      { frequency: 1360, duration: 0.18, volume: 0.09, gap: 0.05 },
+      { frequency: 1680, duration: 0.22, volume: 0.08, gap: 0.07 },
+    ],
+  },
+};
+
 export function playApplause() {
   if (typeof window === 'undefined') {
     return;
@@ -81,6 +139,60 @@ export function playReminderSound() {
 
     oscillator.start(start);
     oscillator.stop(current);
+    oscillator.onended = () => {
+      try {
+        ctx.close();
+      } catch {
+        // ignore
+      }
+    };
+  } catch {
+    // ignore
+  }
+}
+
+export function playNotificationSound(sound: NotificationSound) {
+  if (typeof window === 'undefined') {
+    return;
+  }
+  const preset = NOTIFICATION_SOUND_PRESETS[sound];
+  const tones = preset?.tones ?? NOTIFICATION_SOUND_PRESETS.chime.tones;
+  if (!tones.length) {
+    return;
+  }
+
+  try {
+    const AudioContextConstructor =
+      window.AudioContext || (window as any).webkitAudioContext;
+    if (!AudioContextConstructor) {
+      return;
+    }
+
+    const ctx = new AudioContextConstructor();
+    const oscillator = ctx.createOscillator();
+    const gain = ctx.createGain();
+    oscillator.type = preset?.type ?? 'sine';
+    oscillator.connect(gain);
+    gain.connect(ctx.destination);
+
+    const start = ctx.currentTime;
+    let cursor = start;
+
+    tones.forEach(({ frequency, duration, volume = 0.1, gap = 0.06 }) => {
+      const attackEnd = cursor + Math.min(0.05, duration * 0.4);
+      const releaseStart = cursor + Math.max(0, duration - 0.1);
+
+      oscillator.frequency.setValueAtTime(frequency, cursor);
+      gain.gain.setValueAtTime(0.0001, cursor);
+      gain.gain.exponentialRampToValueAtTime(volume, attackEnd);
+      gain.gain.setValueAtTime(volume, releaseStart);
+      gain.gain.exponentialRampToValueAtTime(0.0001, cursor + duration);
+
+      cursor += duration + gap;
+    });
+
+    oscillator.start(start);
+    oscillator.stop(cursor);
     oscillator.onended = () => {
       try {
         ctx.close();
