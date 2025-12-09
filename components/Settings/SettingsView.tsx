@@ -18,6 +18,8 @@ import {
 import useDialogFocusTrap from '../../lib/useDialogFocusTrap';
 import type useSettingsPage from './useSettingsPage';
 import { LANGUAGES } from '../../lib/i18n';
+import { NOTIFICATION_SOUNDS } from '../../lib/types';
+import type { NotificationSound } from '../../lib/types';
 
 import type { Language } from '../../lib/i18n';
 
@@ -27,6 +29,9 @@ type SettingsViewProps = {
 };
 
 type SectionId = ReturnType<typeof useSettingsPage>['state']['selectedSection'];
+type NotificationPreferences = ReturnType<
+  typeof useSettingsPage
+>['state']['notificationPreferences'];
 
 function SectionCard({
   title,
@@ -60,6 +65,93 @@ function SectionCard({
         </div>
       </div>
       <div className="mt-4 space-y-3">{children}</div>
+    </div>
+  );
+}
+
+function NotificationPreferenceCard({
+  title,
+  description,
+  preference,
+  toggleLabel,
+  selectLabel,
+  soundOptions,
+  onToggle,
+  onSoundChange,
+  testId,
+}: {
+  title: string;
+  description: string;
+  preference: NotificationPreferences[keyof NotificationPreferences];
+  toggleLabel: string;
+  selectLabel: string;
+  soundOptions: { value: NotificationSound; label: string }[];
+  onToggle: () => void;
+  onSoundChange: (sound: NotificationSound) => void;
+  testId: string;
+}) {
+  return (
+    <div
+      className="rounded-xl border border-gray-200 bg-white/70 p-4 shadow-sm dark:border-gray-800 dark:bg-gray-900/60"
+      data-testid={`${testId}-card`}
+    >
+      <div className="flex items-start gap-3">
+        <div className="flex-1 space-y-1">
+          <p className="text-sm font-semibold text-gray-900 dark:text-gray-100">
+            {title}
+          </p>
+          <p className="text-xs text-gray-600 dark:text-gray-300">
+            {description}
+          </p>
+        </div>
+        <button
+          type="button"
+          role="switch"
+          aria-checked={preference.soundEnabled}
+          aria-label={toggleLabel}
+          onClick={onToggle}
+          className={`relative inline-flex h-6 w-11 items-center rounded-full transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 dark:focus-visible:ring-offset-gray-900 ${
+            preference.soundEnabled
+              ? 'bg-blue-600 hover:bg-blue-700'
+              : 'bg-gray-300 hover:bg-gray-400 dark:bg-gray-700 dark:hover:bg-gray-600'
+          }`}
+          data-testid={`${testId}-toggle`}
+        >
+          <span
+            className={`inline-block h-5 w-5 transform rounded-full bg-white shadow transition ${
+              preference.soundEnabled ? 'translate-x-5' : 'translate-x-1'
+            }`}
+          />
+        </button>
+      </div>
+
+      <div className="mt-4 space-y-2">
+        <label
+          className="text-xs font-semibold uppercase tracking-wide text-gray-700 dark:text-gray-300"
+          htmlFor={`${testId}-select`}
+        >
+          {selectLabel}
+        </label>
+        <select
+          id={`${testId}-select`}
+          value={preference.sound}
+          onChange={event =>
+            onSoundChange(event.target.value as NotificationSound)
+          }
+          disabled={!preference.soundEnabled}
+          className="w-full rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm transition focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:cursor-not-allowed disabled:opacity-60 dark:border-gray-700 dark:bg-gray-950 dark:text-gray-100"
+          data-testid={`${testId}-select`}
+        >
+          {soundOptions.map(option => (
+            <option
+              key={option.value}
+              value={option.value}
+            >
+              {option.label}
+            </option>
+          ))}
+        </select>
+      </div>
     </div>
   );
 }
@@ -290,7 +382,22 @@ function WorkScheduleSection({ t }: { t: SettingsViewProps['state']['t'] }) {
   );
 }
 
-function NotificationsSection({ t }: { t: SettingsViewProps['state']['t'] }) {
+function NotificationsSection({
+  t,
+  preferences,
+  onToggle,
+  onSoundChange,
+}: {
+  t: SettingsViewProps['state']['t'];
+  preferences: NotificationPreferences;
+  onToggle: SettingsViewProps['actions']['setNotificationSoundEnabled'];
+  onSoundChange: SettingsViewProps['actions']['setNotificationSound'];
+}) {
+  const soundOptions = NOTIFICATION_SOUNDS.map(sound => ({
+    value: sound,
+    label: t(`settingsPage.notifications.soundOptions.${sound}`),
+  }));
+
   return (
     <div
       className="space-y-4"
@@ -313,6 +420,69 @@ function NotificationsSection({ t }: { t: SettingsViewProps['state']['t'] }) {
             <ChevronRight className="h-4 w-4" />
           </Link>
         </div>
+
+        <div className="rounded-xl border border-dashed border-gray-200 bg-white/60 p-4 dark:border-gray-800 dark:bg-gray-900/60">
+          <div className="space-y-2">
+            <p className="text-sm font-semibold text-gray-900 dark:text-gray-100">
+              {t('settingsPage.notifications.soundPreferences.title')}
+            </p>
+            <p className="text-xs text-gray-600 dark:text-gray-300">
+              {t('settingsPage.notifications.soundPreferences.description')}
+            </p>
+          </div>
+
+          <div className="mt-4 grid gap-3 md:grid-cols-2">
+            <NotificationPreferenceCard
+              title={t(
+                'settingsPage.notifications.soundPreferences.timerFinished.title'
+              )}
+              description={t(
+                'settingsPage.notifications.soundPreferences.timerFinished.description'
+              )}
+              preference={preferences.timerFinished}
+              toggleLabel={t(
+                'settingsPage.notifications.soundPreferences.toggleLabel'
+              )}
+              selectLabel={t(
+                'settingsPage.notifications.soundPreferences.selectLabel'
+              )}
+              soundOptions={soundOptions}
+              onToggle={() =>
+                onToggle(
+                  'timerFinished',
+                  !preferences.timerFinished.soundEnabled
+                )
+              }
+              onSoundChange={sound => onSoundChange('timerFinished', sound)}
+              testId="settings-notifications-timer-finished"
+            />
+
+            <NotificationPreferenceCard
+              title={t(
+                'settingsPage.notifications.soundPreferences.workdayReminder.title'
+              )}
+              description={t(
+                'settingsPage.notifications.soundPreferences.workdayReminder.description'
+              )}
+              preference={preferences.workdayReminder}
+              toggleLabel={t(
+                'settingsPage.notifications.soundPreferences.toggleLabel'
+              )}
+              selectLabel={t(
+                'settingsPage.notifications.soundPreferences.selectLabel'
+              )}
+              soundOptions={soundOptions}
+              onToggle={() =>
+                onToggle(
+                  'workdayReminder',
+                  !preferences.workdayReminder.soundEnabled
+                )
+              }
+              onSoundChange={sound => onSoundChange('workdayReminder', sound)}
+              testId="settings-notifications-workday-reminder"
+            />
+          </div>
+        </div>
       </SectionCard>
     </div>
   );
@@ -327,6 +497,7 @@ export default function SettingsView({ state, actions }: SettingsViewProps) {
     showConfirm,
     navItems,
     fileInputRef,
+    notificationPreferences,
   } = state;
   const {
     setSelectedSection,
@@ -337,6 +508,8 @@ export default function SettingsView({ state, actions }: SettingsViewProps) {
     confirmClear,
     cancelClear,
     setTheme,
+    setNotificationSoundEnabled,
+    setNotificationSound,
   } = actions;
   const confirmDialogRef = useRef<HTMLDivElement | null>(null);
   const confirmCancelButtonRef = useRef<HTMLButtonElement | null>(null);
@@ -373,7 +546,14 @@ export default function SettingsView({ state, actions }: SettingsViewProps) {
       case 'work-schedule':
         return <WorkScheduleSection t={t} />;
       case 'notifications':
-        return <NotificationsSection t={t} />;
+        return (
+          <NotificationsSection
+            t={t}
+            preferences={notificationPreferences}
+            onToggle={setNotificationSoundEnabled}
+            onSoundChange={setNotificationSound}
+          />
+        );
       default:
         return null;
     }

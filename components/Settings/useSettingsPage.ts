@@ -4,6 +4,10 @@ import { useMemo, useRef, useState } from 'react';
 import type { ChangeEvent, RefObject } from 'react';
 import { useI18n, type Language } from '../../lib/i18n';
 import { useStore } from '../../lib/store';
+import type {
+  NotificationPreferences,
+  NotificationSound,
+} from '../../lib/types';
 import { useThemePreference } from '../../lib/useThemePreference';
 
 type SectionId = 'general' | 'appearance' | 'work-schedule' | 'notifications';
@@ -22,6 +26,7 @@ type SettingsState = {
   showConfirm: boolean;
   navItems: SettingsNavItem[];
   fileInputRef: RefObject<HTMLInputElement | null>;
+  notificationPreferences: NotificationPreferences;
 };
 
 type SettingsActions = {
@@ -33,6 +38,14 @@ type SettingsActions = {
   confirmClear: () => void;
   cancelClear: () => void;
   setTheme: (theme: 'light' | 'dark') => void;
+  setNotificationSoundEnabled: (
+    notification: keyof NotificationPreferences,
+    enabled: boolean
+  ) => void;
+  setNotificationSound: (
+    notification: keyof NotificationPreferences,
+    sound: NotificationSound
+  ) => void;
 };
 
 export default function useSettingsPage(): {
@@ -44,6 +57,15 @@ export default function useSettingsPage(): {
     exportData: state.exportData,
     importData: state.importData,
     clearAll: state.clearAll,
+  }));
+  const {
+    notificationPreferences,
+    setNotificationSoundEnabled,
+    setNotificationSound,
+  } = useStore(state => ({
+    notificationPreferences: state.notificationPreferences,
+    setNotificationSoundEnabled: state.setNotificationSoundEnabled,
+    setNotificationSound: state.setNotificationSound,
   }));
   const { theme, setThemePreference } = useThemePreference();
   const [selectedSection, setSelectedSection] = useState<SectionId>('general');
@@ -107,6 +129,7 @@ export default function useSettingsPage(): {
       showConfirm,
       navItems,
       fileInputRef,
+      notificationPreferences,
     },
     actions: {
       setSelectedSection,
@@ -120,6 +143,8 @@ export default function useSettingsPage(): {
       },
       cancelClear: () => setShowConfirm(false),
       setTheme: setThemePreference,
+      setNotificationSoundEnabled,
+      setNotificationSound,
     },
   } as const;
 }
