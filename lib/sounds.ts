@@ -5,11 +5,16 @@ type NotificationTone = {
   duration: number;
   volume?: number;
   gap?: number;
+  detune?: number;
+  harmonics?: { ratio: number; volume?: number; detune?: number }[];
 };
 
 type NotificationSoundPreset = {
   type: OscillatorType;
   tones: NotificationTone[];
+  filterFrequency?: number;
+  filterQ?: number;
+  masterGain?: number;
 };
 
 const NOTIFICATION_SOUND_PRESETS: Record<
@@ -19,40 +24,133 @@ const NOTIFICATION_SOUND_PRESETS: Record<
   chime: {
     type: 'sine',
     tones: [
-      { frequency: 720, duration: 0.32, volume: 0.11 },
-      { frequency: 1020, duration: 0.36, volume: 0.1, gap: 0.08 },
+      {
+        frequency: 620,
+        duration: 0.45,
+        volume: 0.08,
+        harmonics: [
+          { ratio: 1.5, volume: 0.24 },
+          { ratio: 2, volume: 0.18 },
+        ],
+      },
+      {
+        frequency: 830,
+        duration: 0.5,
+        volume: 0.07,
+        gap: 0.1,
+        harmonics: [{ ratio: 2, volume: 0.16 }],
+      },
     ],
+    filterFrequency: 2600,
+    filterQ: 0.9,
+    masterGain: 0.32,
   },
   bell: {
     type: 'triangle',
     tones: [
-      { frequency: 540, duration: 0.42, volume: 0.13 },
-      { frequency: 760, duration: 0.38, volume: 0.11, gap: 0.08 },
+      {
+        frequency: 520,
+        duration: 0.48,
+        volume: 0.09,
+        harmonics: [
+          { ratio: 2, volume: 0.2 },
+          { ratio: 2.5, volume: 0.14 },
+        ],
+      },
+      {
+        frequency: 660,
+        duration: 0.52,
+        volume: 0.08,
+        gap: 0.12,
+        harmonics: [{ ratio: 1.5, volume: 0.22 }],
+      },
     ],
+    filterFrequency: 2200,
+    filterQ: 1,
+    masterGain: 0.34,
   },
   digital: {
     type: 'square',
     tones: [
-      { frequency: 1280, duration: 0.2, volume: 0.1 },
-      { frequency: 1520, duration: 0.18, volume: 0.1, gap: 0.06 },
-      { frequency: 1180, duration: 0.28, volume: 0.1, gap: 0.06 },
+      {
+        frequency: 840,
+        duration: 0.26,
+        volume: 0.07,
+        harmonics: [{ ratio: 2, volume: 0.12 }],
+      },
+      {
+        frequency: 1100,
+        duration: 0.28,
+        volume: 0.06,
+        gap: 0.07,
+        harmonics: [
+          { ratio: 1.26, volume: 0.1 },
+          { ratio: 2, volume: 0.08 },
+        ],
+      },
     ],
+    filterFrequency: 2000,
+    filterQ: 0.95,
+    masterGain: 0.28,
   },
   pulse: {
-    type: 'sawtooth',
+    type: 'sine',
     tones: [
-      { frequency: 420, duration: 0.22, volume: 0.08 },
-      { frequency: 520, duration: 0.22, volume: 0.08, gap: 0.04 },
-      { frequency: 620, duration: 0.22, volume: 0.08, gap: 0.04 },
+      {
+        frequency: 420,
+        duration: 0.32,
+        volume: 0.08,
+        harmonics: [{ ratio: 2, volume: 0.14 }],
+      },
+      {
+        frequency: 520,
+        duration: 0.32,
+        volume: 0.07,
+        gap: 0.06,
+        harmonics: [{ ratio: 1.5, volume: 0.12 }],
+      },
+      {
+        frequency: 380,
+        duration: 0.36,
+        volume: 0.06,
+        gap: 0.05,
+        harmonics: [{ ratio: 2, volume: 0.1 }],
+      },
     ],
+    filterFrequency: 1800,
+    filterQ: 1.1,
+    masterGain: 0.3,
   },
   spark: {
     type: 'sine',
     tones: [
-      { frequency: 1040, duration: 0.16, volume: 0.09 },
-      { frequency: 1360, duration: 0.18, volume: 0.09, gap: 0.05 },
-      { frequency: 1680, duration: 0.22, volume: 0.08, gap: 0.07 },
+      {
+        frequency: 1040,
+        duration: 0.22,
+        volume: 0.07,
+        harmonics: [
+          { ratio: 1.5, volume: 0.16 },
+          { ratio: 2, volume: 0.12 },
+        ],
+      },
+      {
+        frequency: 1320,
+        duration: 0.24,
+        volume: 0.06,
+        gap: 0.05,
+        harmonics: [{ ratio: 2, volume: 0.12 }],
+      },
+      {
+        frequency: 1680,
+        duration: 0.26,
+        volume: 0.05,
+        gap: 0.05,
+        harmonics: [{ ratio: 2.2, volume: 0.09 }],
+      },
     ],
+    filterFrequency: 3000,
+    filterQ: 1,
+    masterGain: 0.3,
   },
 };
 
@@ -169,37 +267,88 @@ export function playNotificationSound(sound: NotificationSound) {
     }
 
     const ctx = new AudioContextConstructor();
-    const oscillator = ctx.createOscillator();
-    const gain = ctx.createGain();
-    oscillator.type = preset?.type ?? 'sine';
-    oscillator.connect(gain);
-    gain.connect(ctx.destination);
-
     const start = ctx.currentTime;
+    const masterGain = ctx.createGain();
+    const filter = ctx.createBiquadFilter();
+
+    filter.type = 'lowpass';
+    filter.frequency.value = preset?.filterFrequency ?? 2400;
+    filter.Q.value = preset?.filterQ ?? 0.9;
+
+    masterGain.gain.setValueAtTime(0.0001, start);
+    masterGain.gain.exponentialRampToValueAtTime(
+      preset?.masterGain ?? 0.3,
+      start + 0.05
+    );
+
+    filter.connect(masterGain);
+    masterGain.connect(ctx.destination);
+
     let cursor = start;
 
-    tones.forEach(({ frequency, duration, volume = 0.1, gap = 0.06 }) => {
-      const attackEnd = cursor + Math.min(0.05, duration * 0.4);
-      const releaseStart = cursor + Math.max(0, duration - 0.1);
+    tones.forEach(
+      ({
+        frequency,
+        duration,
+        volume = 0.08,
+        gap = 0.08,
+        detune,
+        harmonics,
+      }) => {
+        const gain = ctx.createGain();
+        const attackEnd = cursor + Math.min(0.08, duration * 0.5);
+        const releaseStart = cursor + Math.max(0, duration - 0.12);
 
-      oscillator.frequency.setValueAtTime(frequency, cursor);
-      gain.gain.setValueAtTime(0.0001, cursor);
-      gain.gain.exponentialRampToValueAtTime(volume, attackEnd);
-      gain.gain.setValueAtTime(volume, releaseStart);
-      gain.gain.exponentialRampToValueAtTime(0.0001, cursor + duration);
+        gain.gain.setValueAtTime(0.0001, cursor);
+        gain.gain.exponentialRampToValueAtTime(volume, attackEnd);
+        gain.gain.setValueAtTime(volume, releaseStart);
+        gain.gain.exponentialRampToValueAtTime(0.0001, cursor + duration);
+        gain.connect(filter);
 
-      cursor += duration + gap;
-    });
+        const scheduleVoice = (
+          baseFrequency: number,
+          voiceDetune: number | undefined,
+          level: number
+        ) => {
+          const oscillator = ctx.createOscillator();
+          const voiceGain = ctx.createGain();
 
-    oscillator.start(start);
-    oscillator.stop(cursor);
-    oscillator.onended = () => {
+          oscillator.type = preset?.type ?? 'sine';
+          oscillator.frequency.setValueAtTime(baseFrequency, cursor);
+          if (voiceDetune) {
+            oscillator.detune.setValueAtTime(voiceDetune, cursor);
+          }
+
+          voiceGain.gain.setValueAtTime(level, cursor);
+          oscillator.connect(voiceGain);
+          voiceGain.connect(gain);
+
+          oscillator.start(cursor);
+          oscillator.stop(cursor + duration + 0.05);
+        };
+
+        scheduleVoice(frequency, detune, 1);
+
+        harmonics?.forEach(harmonic => {
+          const harmonicFrequency = frequency * harmonic.ratio;
+          const harmonicLevel = Math.min(1, harmonic.volume ?? 0.4);
+          scheduleVoice(harmonicFrequency, harmonic.detune, harmonicLevel);
+        });
+
+        cursor += duration + gap;
+      }
+    );
+
+    masterGain.gain.exponentialRampToValueAtTime(0.0001, cursor + 0.25);
+
+    const shutdownDelay = Math.max(0, cursor - ctx.currentTime + 0.35) * 1000;
+    window.setTimeout(() => {
       try {
         ctx.close();
       } catch {
         // ignore
       }
-    };
+    }, shutdownDelay);
   } catch {
     // ignore
   }

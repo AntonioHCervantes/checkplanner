@@ -160,12 +160,12 @@ function NotificationPreferenceCard({
             type="button"
             onClick={() => playNotificationSound(preference.sound)}
             disabled={!preference.soundEnabled}
-            className="inline-flex items-center justify-center gap-2 rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm font-semibold text-blue-700 shadow-sm transition hover:border-blue-400 hover:bg-blue-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 disabled:cursor-not-allowed disabled:opacity-60 dark:border-gray-700 dark:bg-gray-950 dark:text-blue-200 dark:hover:border-blue-400 dark:hover:bg-blue-900/30"
+            className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-gray-200 bg-white text-blue-700 shadow-sm transition hover:border-blue-400 hover:bg-blue-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 disabled:cursor-not-allowed disabled:opacity-60 dark:border-gray-700 dark:bg-gray-950 dark:text-blue-200 dark:hover:border-blue-400 dark:hover:bg-blue-900/30"
             aria-label={previewLabel}
+            title={previewLabel}
             data-testid={`${testId}-preview`}
           >
             <Play className="h-4 w-4" />
-            {previewLabel}
           </button>
         </div>
       </div>
