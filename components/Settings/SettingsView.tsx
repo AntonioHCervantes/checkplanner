@@ -14,12 +14,14 @@ import {
   Sun,
   Trash2,
   Upload,
+  Play,
 } from 'lucide-react';
 import useDialogFocusTrap from '../../lib/useDialogFocusTrap';
 import type useSettingsPage from './useSettingsPage';
 import { LANGUAGES } from '../../lib/i18n';
 import { NOTIFICATION_SOUNDS } from '../../lib/types';
 import type { NotificationSound } from '../../lib/types';
+import { playNotificationSound } from '../../lib/sounds';
 
 import type { Language } from '../../lib/i18n';
 
@@ -75,6 +77,7 @@ function NotificationPreferenceCard({
   preference,
   toggleLabel,
   selectLabel,
+  previewLabel,
   soundOptions,
   onToggle,
   onSoundChange,
@@ -85,6 +88,7 @@ function NotificationPreferenceCard({
   preference: NotificationPreferences[keyof NotificationPreferences];
   toggleLabel: string;
   selectLabel: string;
+  previewLabel: string;
   soundOptions: { value: NotificationSound; label: string }[];
   onToggle: () => void;
   onSoundChange: (sound: NotificationSound) => void;
@@ -132,25 +136,38 @@ function NotificationPreferenceCard({
         >
           {selectLabel}
         </label>
-        <select
-          id={`${testId}-select`}
-          value={preference.sound}
-          onChange={event =>
-            onSoundChange(event.target.value as NotificationSound)
-          }
-          disabled={!preference.soundEnabled}
-          className="w-full rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm transition focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:cursor-not-allowed disabled:opacity-60 dark:border-gray-700 dark:bg-gray-950 dark:text-gray-100"
-          data-testid={`${testId}-select`}
-        >
-          {soundOptions.map(option => (
-            <option
-              key={option.value}
-              value={option.value}
-            >
-              {option.label}
-            </option>
-          ))}
-        </select>
+        <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
+          <select
+            id={`${testId}-select`}
+            value={preference.sound}
+            onChange={event =>
+              onSoundChange(event.target.value as NotificationSound)
+            }
+            disabled={!preference.soundEnabled}
+            className="w-full rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm transition focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:cursor-not-allowed disabled:opacity-60 dark:border-gray-700 dark:bg-gray-950 dark:text-gray-100 sm:max-w-xs"
+            data-testid={`${testId}-select`}
+          >
+            {soundOptions.map(option => (
+              <option
+                key={option.value}
+                value={option.value}
+              >
+                {option.label}
+              </option>
+            ))}
+          </select>
+          <button
+            type="button"
+            onClick={() => playNotificationSound(preference.sound)}
+            disabled={!preference.soundEnabled}
+            className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-gray-200 bg-white text-blue-700 shadow-sm transition hover:border-blue-400 hover:bg-blue-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 disabled:cursor-not-allowed disabled:opacity-60 dark:border-gray-700 dark:bg-gray-950 dark:text-blue-200 dark:hover:border-blue-400 dark:hover:bg-blue-900/30"
+            aria-label={previewLabel}
+            title={previewLabel}
+            data-testid={`${testId}-preview`}
+          >
+            <Play className="h-4 w-4" />
+          </button>
+        </div>
       </div>
     </div>
   );
@@ -397,6 +414,9 @@ function NotificationsSection({
     value: sound,
     label: t(`settingsPage.notifications.soundOptions.${sound}`),
   }));
+  const previewLabel = t(
+    'settingsPage.notifications.soundPreferences.previewLabel'
+  );
 
   return (
     <div
@@ -446,6 +466,7 @@ function NotificationsSection({
               selectLabel={t(
                 'settingsPage.notifications.soundPreferences.selectLabel'
               )}
+              previewLabel={previewLabel}
               soundOptions={soundOptions}
               onToggle={() =>
                 onToggle(
@@ -471,6 +492,7 @@ function NotificationsSection({
               selectLabel={t(
                 'settingsPage.notifications.soundPreferences.selectLabel'
               )}
+              previewLabel={previewLabel}
               soundOptions={soundOptions}
               onToggle={() =>
                 onToggle(
