@@ -7,6 +7,7 @@ import {
   Bell,
   CalendarClock,
   ChevronRight,
+  Code,
   Download,
   Languages,
   Moon,
@@ -180,6 +181,8 @@ function GeneralSection({
   handleImport,
   exportData,
   requestClear,
+  vsCodeAgentEnabled,
+  setVsCodeAgentEnabled,
   fileInputRef,
 }: {
   language: Language;
@@ -188,6 +191,8 @@ function GeneralSection({
   handleImport: SettingsViewProps['actions']['handleImport'];
   exportData: SettingsViewProps['actions']['exportData'];
   requestClear: SettingsViewProps['actions']['requestClear'];
+  vsCodeAgentEnabled: SettingsViewProps['state']['vsCodeAgentEnabled'];
+  setVsCodeAgentEnabled: SettingsViewProps['actions']['setVsCodeAgentEnabled'];
   fileInputRef: SettingsViewProps['state']['fileInputRef'];
 }) {
   return (
@@ -288,6 +293,48 @@ function GeneralSection({
               {t('actions.clearAll')}
             </button>
           </div>
+        </div>
+      </SectionCard>
+
+      <SectionCard
+        title={t('settingsPage.general.integrations.title')}
+        description={t('settingsPage.general.integrations.description')}
+        icon={<Code className="h-5 w-5" />}
+        testId="settings-integrations-card"
+      >
+        <div
+          className="flex items-start justify-between gap-4 rounded-xl border border-gray-200 bg-white/70 p-4 shadow-sm dark:border-gray-800 dark:bg-gray-900/60"
+          data-testid="settings-integrations-vscode-agent"
+        >
+          <div className="space-y-1">
+            <p className="text-sm font-semibold text-gray-900 dark:text-gray-100">
+              {t('settingsPage.general.integrations.vsCodeAgent.title')}
+            </p>
+            <p className="text-xs text-gray-600 dark:text-gray-300">
+              {t('settingsPage.general.integrations.vsCodeAgent.description')}
+            </p>
+          </div>
+          <button
+            type="button"
+            role="switch"
+            aria-checked={vsCodeAgentEnabled}
+            aria-label={t(
+              'settingsPage.general.integrations.vsCodeAgent.toggleLabel'
+            )}
+            onClick={() => setVsCodeAgentEnabled(!vsCodeAgentEnabled)}
+            className={`relative inline-flex h-6 w-11 items-center rounded-full transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 dark:focus-visible:ring-offset-gray-900 ${
+              vsCodeAgentEnabled
+                ? 'bg-blue-600 hover:bg-blue-700'
+                : 'bg-gray-300 hover:bg-gray-400 dark:bg-gray-700 dark:hover:bg-gray-600'
+            }`}
+            data-testid="settings-integrations-vscode-agent-toggle"
+          >
+            <span
+              className={`inline-block h-5 w-5 transform rounded-full bg-white shadow transition ${
+                vsCodeAgentEnabled ? 'translate-x-5' : 'translate-x-1'
+              }`}
+            />
+          </button>
         </div>
       </SectionCard>
     </div>
@@ -520,6 +567,7 @@ export default function SettingsView({ state, actions }: SettingsViewProps) {
     navItems,
     fileInputRef,
     notificationPreferences,
+    vsCodeAgentEnabled,
   } = state;
   const {
     setSelectedSection,
@@ -532,6 +580,7 @@ export default function SettingsView({ state, actions }: SettingsViewProps) {
     setTheme,
     setNotificationSoundEnabled,
     setNotificationSound,
+    setVsCodeAgentEnabled,
   } = actions;
   const confirmDialogRef = useRef<HTMLDivElement | null>(null);
   const confirmCancelButtonRef = useRef<HTMLButtonElement | null>(null);
@@ -554,6 +603,8 @@ export default function SettingsView({ state, actions }: SettingsViewProps) {
             handleImport={handleImport}
             exportData={exportData}
             requestClear={requestClear}
+            vsCodeAgentEnabled={vsCodeAgentEnabled}
+            setVsCodeAgentEnabled={setVsCodeAgentEnabled}
             fileInputRef={fileInputRef}
           />
         );

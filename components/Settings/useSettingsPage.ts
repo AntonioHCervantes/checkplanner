@@ -27,6 +27,7 @@ type SettingsState = {
   navItems: SettingsNavItem[];
   fileInputRef: RefObject<HTMLInputElement | null>;
   notificationPreferences: NotificationPreferences;
+  vsCodeAgentEnabled: boolean;
 };
 
 type SettingsActions = {
@@ -46,6 +47,7 @@ type SettingsActions = {
     notification: keyof NotificationPreferences,
     sound: NotificationSound
   ) => void;
+  setVsCodeAgentEnabled: (enabled: boolean) => void;
 };
 
 export default function useSettingsPage(): {
@@ -66,6 +68,10 @@ export default function useSettingsPage(): {
     notificationPreferences: state.notificationPreferences,
     setNotificationSoundEnabled: state.setNotificationSoundEnabled,
     setNotificationSound: state.setNotificationSound,
+  }));
+  const { vsCodeAgentEnabled, setVsCodeAgentEnabled } = useStore(state => ({
+    vsCodeAgentEnabled: state.vsCodeAgentEnabled,
+    setVsCodeAgentEnabled: state.setVsCodeAgentEnabled,
   }));
   const { theme, setThemePreference } = useThemePreference();
   const [selectedSection, setSelectedSection] = useState<SectionId>('general');
@@ -130,6 +136,7 @@ export default function useSettingsPage(): {
       navItems,
       fileInputRef,
       notificationPreferences,
+      vsCodeAgentEnabled,
     },
     actions: {
       setSelectedSection,
@@ -145,6 +152,7 @@ export default function useSettingsPage(): {
       setTheme: setThemePreference,
       setNotificationSoundEnabled,
       setNotificationSound,
+      setVsCodeAgentEnabled,
     },
   } as const;
 }

@@ -60,6 +60,7 @@ const translations: Record<Language, any> = {
       markDone: 'Mark as done',
       deleteTask: 'Delete task',
       showTimer: 'Plan time',
+      openInVsCodeAgent: 'Open in VS Code',
       setMainTask: 'Mark as main task',
       unsetMainTask: 'Remove main task status',
       mainTaskTooltip: 'Main task of the day',
@@ -198,6 +199,16 @@ const translations: Record<Language, any> = {
           exportHelper: 'Download a copy of your current data.',
           clearHelper:
             'This will delete all tasks, tags, timers, and preferences.',
+        },
+        integrations: {
+          title: 'Integrations',
+          description: 'Connect CheckPlanner with your tools.',
+          vsCodeAgent: {
+            title: 'VS Code Copilot agent',
+            description:
+              'Show an action to open in-progress tasks in VS Code Copilot Chat.',
+            toggleLabel: 'Enable VS Code agent action',
+          },
         },
       },
       appearance: {
@@ -521,6 +532,7 @@ const translations: Record<Language, any> = {
       markDone: 'Marcar como completada',
       deleteTask: 'Eliminar tarea',
       showTimer: 'Planificar tiempo',
+      openInVsCodeAgent: 'Abrir en VS Code',
       setMainTask: 'Marcar como tarea principal',
       unsetMainTask: 'Quitar tarea principal',
       mainTaskTooltip: 'Tarea principal del día',
@@ -660,6 +672,16 @@ const translations: Record<Language, any> = {
           exportHelper: 'Descarga una copia de tus datos actuales.',
           clearHelper:
             'Esto eliminará todas las tareas, etiquetas y preferencias.',
+        },
+        integrations: {
+          title: 'Integraciones',
+          description: 'Conecta CheckPlanner con tus herramientas.',
+          vsCodeAgent: {
+            title: 'Agente de VS Code Copilot',
+            description:
+              'Muestra una acción para abrir tareas en progreso en VS Code Copilot Chat.',
+            toggleLabel: 'Activar acción del agente de VS Code',
+          },
         },
       },
       appearance: {
@@ -991,6 +1013,7 @@ const translations: Record<Language, any> = {
       markDone: 'Marquer comme terminée',
       deleteTask: 'Supprimer la tâche',
       showTimer: 'Planifier le temps',
+      openInVsCodeAgent: 'Ouvrir dans VS Code',
       setMainTask: 'Définir comme tâche principale',
       unsetMainTask: 'Retirer le statut de tâche principale',
       mainTaskTooltip: 'Tâche principale de la journée',
@@ -1135,6 +1158,16 @@ const translations: Record<Language, any> = {
           exportHelper: 'Téléchargez une copie de vos données actuelles.',
           clearHelper:
             'Cela supprimera toutes les tâches, étiquettes et préférences.',
+        },
+        integrations: {
+          title: 'Intégrations',
+          description: 'Connectez CheckPlanner à vos outils.',
+          vsCodeAgent: {
+            title: 'Agent VS Code Copilot',
+            description:
+              'Affiche une action pour ouvrir les tâches en cours dans VS Code Copilot Chat.',
+            toggleLabel: "Activer l'action de l'agent VS Code",
+          },
         },
       },
       appearance: {
@@ -1465,6 +1498,7 @@ const translations: Record<Language, any> = {
       markDone: 'Segna come completata',
       deleteTask: 'Elimina attività',
       showTimer: 'Pianifica tempo',
+      openInVsCodeAgent: 'Apri in VS Code',
       setMainTask: 'Imposta come attività principale',
       unsetMainTask: 'Rimuovi attività principale',
       mainTaskTooltip: 'Attività principale della giornata',
@@ -1605,6 +1639,16 @@ const translations: Record<Language, any> = {
           exportHelper: 'Scarica una copia dei tuoi dati attuali.',
           clearHelper:
             'Questo eliminerà tutte le attività, le etichette e le preferenze.',
+        },
+        integrations: {
+          title: 'Integrazioni',
+          description: 'Collega CheckPlanner ai tuoi strumenti.',
+          vsCodeAgent: {
+            title: 'Agente di VS Code Copilot',
+            description:
+              'Mostra un’azione per aprire le attività in corso in VS Code Copilot Chat.',
+            toggleLabel: "Attiva l'azione dell'agente VS Code",
+          },
         },
       },
       appearance: {
@@ -1933,6 +1977,7 @@ const translations: Record<Language, any> = {
       markDone: 'Als erledigt markieren',
       deleteTask: 'Aufgabe löschen',
       showTimer: 'Zeit planen',
+      openInVsCodeAgent: 'In VS Code öffnen',
       setMainTask: 'Als Hauptaufgabe festlegen',
       unsetMainTask: 'Hauptaufgabe entfernen',
       mainTaskTooltip: 'Hauptaufgabe des Tages',
@@ -2074,6 +2119,16 @@ const translations: Record<Language, any> = {
           exportHelper: 'Lade eine Kopie deiner aktuellen Daten herunter.',
           clearHelper:
             'Dadurch werden alle Aufgaben, Etiketten und Einstellungen entfernt.',
+        },
+        integrations: {
+          title: 'Integrationen',
+          description: 'Verbinde CheckPlanner mit deinen Tools.',
+          vsCodeAgent: {
+            title: 'VS Code Copilot-Agent',
+            description:
+              'Zeigt eine Aktion zum Öffnen laufender Aufgaben in VS Code Copilot Chat.',
+            toggleLabel: 'VS-Code-Agent-Aktion aktivieren',
+          },
         },
       },
       appearance: {

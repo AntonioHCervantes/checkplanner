@@ -5,7 +5,7 @@ import {
   type MouseEvent,
   type KeyboardEvent,
 } from 'react';
-import { Check, Trash2, Play, Clock, Star } from 'lucide-react';
+import { Check, Trash2, Play, Clock, Star, ExternalLink } from 'lucide-react';
 import Link from '../Link/Link';
 import Timer from './Timer';
 import useTaskCard, { UseTaskCardProps } from './useTaskCard';
@@ -28,9 +28,16 @@ export default function TaskCard(props: UseTaskCardProps) {
     t,
     isMainTask,
     isDragging,
+    vsCodeAgentEnabled,
   } = state;
-  const { markInProgress, markDone, getTagColor, deleteTask, toggleMainTask } =
-    actions;
+  const {
+    markInProgress,
+    markDone,
+    getTagColor,
+    deleteTask,
+    toggleMainTask,
+    openInVsCodeAgent,
+  } = actions;
   const { task, mode } = props;
   const instructionId = `${task.id}-drag-instructions`;
   const keyboardInstructions = t('dnd.keyboardInstructions');
@@ -232,23 +239,40 @@ export default function TaskCard(props: UseTaskCardProps) {
         </div>
         {mode === 'my-day' && task.dayStatus === 'doing' && (
           <>
-            <Link
-              onClick={handleToggleTimer}
-              aria-label={t('taskCard.showTimer')}
-              title={t('taskCard.showTimer')}
-              icon={Clock}
-              className="mt-4"
-              aria-expanded={isTimerVisible}
-              onKeyDown={handleActionKeyDown}
-              data-testid="task-card-toggle-timer"
-            >
-              {t('taskCard.showTimer')}
-            </Link>
+            <div className="mt-4 space-y-3">
+              <Link
+                onClick={handleToggleTimer}
+                aria-label={t('taskCard.showTimer')}
+                title={t('taskCard.showTimer')}
+                icon={Clock}
+                onKeyDown={handleActionKeyDown}
+                aria-expanded={isTimerVisible}
+                data-testid="task-card-toggle-timer"
+              >
+                {t('taskCard.showTimer')}
+              </Link>
+            </div>
             {isTimerVisible && (
               <Timer
                 taskId={task.id}
                 data-testid="task-card-timer"
               />
+            )}
+            {vsCodeAgentEnabled && (
+              <div className="mt-3 flex justify-end">
+                <button
+                  type="button"
+                  onClick={openInVsCodeAgent}
+                  aria-label={t('taskCard.openInVsCodeAgent')}
+                  title={t('taskCard.openInVsCodeAgent')}
+                  onKeyDown={handleActionKeyDown}
+                  className="inline-flex items-center gap-2 rounded-full border border-blue-200/80 bg-white px-3 py-1.5 text-xs font-semibold text-blue-700 shadow-sm transition hover:border-blue-300 hover:bg-blue-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-300/80 focus-visible:ring-offset-2 dark:border-blue-900/60 dark:bg-gray-950 dark:text-blue-200 dark:hover:bg-blue-900/30"
+                  data-testid="task-card-open-vscode-agent"
+                >
+                  <ExternalLink className="h-3.5 w-3.5" />
+                  {t('taskCard.openInVsCodeAgent')}
+                </button>
+              </div>
             )}
           </>
         )}

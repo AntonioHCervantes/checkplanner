@@ -252,7 +252,8 @@ const defaultState: PersistedState = {
   workSchedule: createEmptyWorkSchedule(),
   workPreferences: defaultWorkPreferences,
   notificationPreferences: defaultNotificationPreferences,
-  version: 12,
+  vsCodeAgentEnabled: false,
+  version: 13,
 };
 
 type Store = PersistedState & {
@@ -311,6 +312,7 @@ type Store = PersistedState & {
     notification: keyof NotificationPreferences,
     sound: NotificationSound
   ) => void;
+  setVsCodeAgentEnabled: (enabled: boolean) => void;
   applyRecurringTasksForToday: () => void;
 };
 
@@ -414,6 +416,13 @@ if (persisted) {
       },
     };
     persisted.version = 12;
+  }
+  if (persisted.version < 13) {
+    persisted.vsCodeAgentEnabled = false;
+    persisted.version = 13;
+  }
+  if (typeof persisted.vsCodeAgentEnabled !== 'boolean') {
+    persisted.vsCodeAgentEnabled = false;
   }
   persisted.tasks = persisted.tasks.map(task => {
     const sanitizedRepeat = sanitizeTaskRepeat((task as any).repeat);
@@ -607,6 +616,7 @@ export const useStore = create<Store>((set, get) => ({
         workSchedule: state.workSchedule,
         workPreferences: state.workPreferences,
         notificationPreferences: state.notificationPreferences,
+        vsCodeAgentEnabled: state.vsCodeAgentEnabled,
         version: state.version,
       };
       saveState(persisted);
@@ -957,6 +967,10 @@ export const useStore = create<Store>((set, get) => ({
       notificationPreferences: sanitizeNotificationPreferences(
         data.notificationPreferences
       ),
+      vsCodeAgentEnabled:
+        typeof data.vsCodeAgentEnabled === 'boolean'
+          ? data.vsCodeAgentEnabled
+          : defaultState.vsCodeAgentEnabled,
       version: defaultState.version,
     };
     set(() => sanitized);
@@ -1129,6 +1143,10 @@ export const useStore = create<Store>((set, get) => ({
         },
       };
     });
+    saveState(get());
+  },
+  setVsCodeAgentEnabled: enabled => {
+    set(() => ({ vsCodeAgentEnabled: enabled }));
     saveState(get());
   },
   applyRecurringTasksForToday: () => {
