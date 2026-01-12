@@ -40,6 +40,7 @@ describe('TaskCard', () => {
         allTags: [],
         isMainTask: false,
         isDragging: false,
+        vsCodeAgentEnabled: false,
       },
       actions: {
         markInProgress: jest.fn(),
@@ -47,6 +48,7 @@ describe('TaskCard', () => {
         getTagColor: () => '#fff',
         deleteTask: jest.fn(),
         toggleMainTask: jest.fn(),
+        openInVsCodeAgent: jest.fn(),
       },
     });
   });

@@ -103,6 +103,7 @@ export type PersistedState = {
   workSchedule: WorkSchedule;
   workPreferences: WorkPreferences;
   notificationPreferences: NotificationPreferences;
+  vsCodeAgentEnabled: boolean;
   version: number;
 };
 

@@ -96,7 +96,8 @@ const createTemplateState = (
       },
     },
     notificationPreferences: defaultNotificationPreferences,
-    version: 12,
+    vsCodeAgentEnabled: false,
+    version: 13,
   };
 };
 
@@ -299,7 +300,10 @@ const createTechLeadTemplateState = (): PersistedState => {
       favorite: false,
     },
   ];
-  return createTemplateState(baseTasks, tags);
+  return {
+    ...createTemplateState(baseTasks, tags),
+    vsCodeAgentEnabled: true,
+  };
 };
 
 const createArchitectTemplateState = (): PersistedState => {

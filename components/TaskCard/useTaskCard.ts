@@ -41,6 +41,7 @@ export default function useTaskCard({
     tags: allTags,
     mainMyDayTaskId,
     setMainMyDayTask,
+    vsCodeAgentEnabled,
   } = useStore(state => ({
     moveTask: state.moveTask,
     removeTask: state.removeTask,
@@ -48,6 +49,7 @@ export default function useTaskCard({
     tags: state.tags,
     mainMyDayTaskId: state.mainMyDayTaskId,
     setMainMyDayTask: state.setMainMyDayTask,
+    vsCodeAgentEnabled: state.vsCodeAgentEnabled,
   }));
   const { t } = useI18n();
 
@@ -91,6 +93,22 @@ export default function useTaskCard({
     setMainMyDayTask(mainMyDayTaskId === task.id ? null : task.id);
   };
 
+  const openInVsCodeAgent = () => {
+    const prompt = [task.title, task.description]
+      .map(part => (typeof part === 'string' ? part.trim() : ''))
+      .filter(Boolean)
+      .join('\n\n');
+
+    if (!prompt) {
+      return;
+    }
+
+    const url = `vscode://github.copilot-chat?mode=agent&prompt=${encodeURIComponent(
+      prompt
+    )}`;
+    window.location.href = url;
+  };
+
   return {
     state: {
       attributes,
@@ -101,6 +119,7 @@ export default function useTaskCard({
       allTags,
       isMainTask: mainMyDayTaskId === task.id,
       isDragging,
+      vsCodeAgentEnabled,
     },
     actions: {
       markInProgress,
@@ -108,6 +127,7 @@ export default function useTaskCard({
       getTagColor,
       deleteTask,
       toggleMainTask,
+      openInVsCodeAgent,
     },
   } as const;
 }
