@@ -12,6 +12,7 @@ export interface UseAddTaskProps {
   tags: Tag[];
   addTag: (tag: Tag) => void;
   toggleFavoriteTag: (label: string) => void;
+  activeTag?: string | null;
 }
 
 export default function useAddTask({
@@ -19,6 +20,7 @@ export default function useAddTask({
   tags: existingTags,
   addTag,
   toggleFavoriteTag,
+  activeTag = null,
 }: UseAddTaskProps) {
   const favoriteLabels = existingTags.filter(t => t.favorite).map(t => t.label);
   const [title, setTitle] = useState('');
@@ -41,9 +43,17 @@ export default function useAddTask({
         }
       });
 
+      if (
+        activeTag &&
+        existingLabels.includes(activeTag) &&
+        !withFavorites.includes(activeTag)
+      ) {
+        withFavorites.push(activeTag);
+      }
+
       return withFavorites;
     });
-  }, [existingTags]);
+  }, [activeTag, existingTags]);
 
   const handleAdd = (pendingTag?: string) => {
     if (!title.trim()) return;

@@ -75,6 +75,7 @@ export default function TasksView() {
           tags={tags}
           addTag={addTag}
           toggleFavoriteTag={toggleFavoriteTag}
+          activeTag={activeTag === 'all' ? null : activeTag}
         />
       </div>
       <TagFilter

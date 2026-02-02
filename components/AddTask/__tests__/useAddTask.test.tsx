@@ -16,15 +16,18 @@ const noopToggleFavoriteTag = () => {};
 function UseAddTaskTest({
   tags,
   onTagsChange,
+  activeTag,
 }: {
   tags: Tag[];
   onTagsChange: (value: string[]) => void;
+  activeTag?: string | null;
 }) {
   const { state } = useAddTask({
     addTask: noopAddTask,
     tags,
     addTag: noopAddTag,
     toggleFavoriteTag: noopToggleFavoriteTag,
+    activeTag,
   });
 
   useEffect(() => {
@@ -124,5 +127,27 @@ describe('useAddTask', () => {
     });
 
     expect(toggleFavoriteTag).toHaveBeenCalledWith('work');
+  });
+
+  it('adds the active tag to the selected tags list', async () => {
+    const initialTags: Tag[] = [
+      { id: '1', label: 'work', color: '#f00', favorite: false },
+      { id: '2', label: 'home', color: '#0f0', favorite: false },
+    ];
+    let latestTags: string[] = [];
+
+    render(
+      <UseAddTaskTest
+        tags={initialTags}
+        activeTag="home"
+        onTagsChange={value => {
+          latestTags = value;
+        }}
+      />
+    );
+
+    await waitFor(() => {
+      expect(latestTags).toEqual(['home']);
+    });
   });
 });
