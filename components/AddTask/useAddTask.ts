@@ -34,6 +34,10 @@ export default function useAddTask({
         .filter(t => t.favorite)
         .map(t => t.label);
 
+      if (activeTag && existingLabels.includes(activeTag)) {
+        return [activeTag];
+      }
+
       const filtered = prev.filter(t => existingLabels.includes(t));
       const withFavorites = [...filtered];
 
@@ -42,14 +46,6 @@ export default function useAddTask({
           withFavorites.push(label);
         }
       });
-
-      if (
-        activeTag &&
-        existingLabels.includes(activeTag) &&
-        !withFavorites.includes(activeTag)
-      ) {
-        withFavorites.push(activeTag);
-      }
 
       return withFavorites;
     });

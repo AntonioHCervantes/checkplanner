@@ -129,9 +129,9 @@ describe('useAddTask', () => {
     expect(toggleFavoriteTag).toHaveBeenCalledWith('work');
   });
 
-  it('adds the active tag to the selected tags list', async () => {
+  it('shows only the active tag in the selected tags list', async () => {
     const initialTags: Tag[] = [
-      { id: '1', label: 'work', color: '#f00', favorite: false },
+      { id: '1', label: 'work', color: '#f00', favorite: true },
       { id: '2', label: 'home', color: '#0f0', favorite: false },
     ];
     let latestTags: string[] = [];
